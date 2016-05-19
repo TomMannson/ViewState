@@ -1,4 +1,4 @@
-package pl.tomasz.krol.viewstatecompiler.utils;
+package pl.tommannson.viewstate.processor.utils;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;

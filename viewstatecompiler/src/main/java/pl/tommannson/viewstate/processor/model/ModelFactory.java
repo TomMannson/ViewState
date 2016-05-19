@@ -1,4 +1,4 @@
-package pl.tomasz.krol.viewstatecompiler.model;
+package pl.tommannson.viewstate.processor.model;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -10,7 +10,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
-import pl.tomasz.krol.viewstatecompiler.utils.AptUtils;
+import pl.tommannson.viewstate.processor.utils.AptUtils;
 
 
 /**

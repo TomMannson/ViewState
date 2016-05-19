@@ -1,4 +1,4 @@
-package pl.tomasz.krol.viewstatecompiler.model;
+package pl.tommannson.viewstate.processor.model;
 
 /**
  * Created by tomasz.krol on 2016-05-10.

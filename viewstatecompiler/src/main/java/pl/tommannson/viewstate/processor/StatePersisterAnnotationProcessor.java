@@ -1,4 +1,4 @@
-package pl.tomasz.krol.viewstatecompiler;
+package pl.tommannson.viewstate.processor;
 
 import pl.tommannson.viewstate.annotations.ViewState;
 import com.google.auto.service.AutoService;
@@ -20,10 +20,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-import pl.tomasz.krol.viewstatecompiler.model.ModelFactory;
-import pl.tomasz.krol.viewstatecompiler.model.StateBinding;
-import pl.tomasz.krol.viewstatecompiler.model.VariableBinding;
-import pl.tomasz.krol.viewstatecompiler.utils.AptUtils;
+import pl.tommannson.viewstate.processor.model.ModelFactory;
+import pl.tommannson.viewstate.processor.model.StateBinding;
+import pl.tommannson.viewstate.processor.model.VariableBinding;
+import pl.tommannson.viewstate.processor.utils.AptUtils;
 
 
 @AutoService(Processor.class)
