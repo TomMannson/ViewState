@@ -1,6 +1,5 @@
 package pl.tommannson.viewstate.processor;
 
-import pl.tommannson.viewstate.annotations.ViewState;
 import com.google.auto.service.AutoService;
 
 import java.io.IOException;
@@ -19,9 +18,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 
+import pl.tommannson.viewstate.annotations.ViewData;
+import pl.tommannson.viewstate.annotations.ViewState;
 import pl.tommannson.viewstate.processor.model.ModelFactory;
-import pl.tommannson.viewstate.processor.model.StateBinding;
+import pl.tommannson.viewstate.processor.model.StateBindingRenderer;
 import pl.tommannson.viewstate.processor.model.VariableBinding;
 import pl.tommannson.viewstate.processor.utils.AptUtils;
 
@@ -54,27 +56,25 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> types = new LinkedHashSet<>();
 
-        types.add(ViewState.class.getCanonicalName());
+//        types.add(ViewState.class.getCanonicalName());
+        types.add(ViewData.class.getCanonicalName());
         return types;
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-        Map<TypeElement, StateBinding> elements = findAndParseTargets(roundEnv);
+        try {
+            Map<TypeElement, StateBindingRenderer> elements = findAndParseTargets(roundEnv);
 
-        for (Map.Entry<TypeElement, StateBinding> entry : elements.entrySet()) {
-            TypeElement typeElement = entry.getKey();
-            StateBinding bindingClass = entry.getValue();
+            for (Map.Entry<TypeElement, StateBindingRenderer> entry : elements.entrySet()) {
+                TypeElement typeElement = entry.getKey();
+                StateBindingRenderer bindingClass = entry.getValue();
 
-            try {
                 bindingClass.generateJava().writeTo(filer);
-            } catch (IOException e) {
-                e.printStackTrace();
-//                error(typeElement, "Unable to write view binder for type %s: %s", typeElement,
-//                        e.getMessage());
-//            }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -84,19 +84,20 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
         return SourceVersion.RELEASE_7;
     }
 
-    private Map<TypeElement, StateBinding> findAndParseTargets(RoundEnvironment env) {
-        Map<TypeElement, StateBinding> targetClassMap = new LinkedHashMap<>();
+    private Map<TypeElement, StateBindingRenderer> findAndParseTargets(RoundEnvironment env) {
+        Map<TypeElement, StateBindingRenderer> targetClassMap = new LinkedHashMap<>();
         Set<TypeElement> erasedTargetNames = new LinkedHashSet<>();
 
         // Process each @BindArray element.
-        for (Element element : env.getElementsAnnotatedWith(ViewState.class)) {
+        for (Element element : env.getElementsAnnotatedWith(ViewData.class)) {
 
             TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
 
-            StateBinding binding = factory.getOrCreateTargetClass(targetClassMap, enclosingElement);
+            StateBindingRenderer binding = factory.getOrCreateTargetClass(targetClassMap, enclosingElement);
 
             VariableBinding varBind = new VariableBinding();
             varBind.fieldType = element.asType().toString();
+            varBind.fieldTypeMinor = element.asType();
             varBind.fieldName = element.getSimpleName().toString();
             varBind.isPrimitive = AptUtils.isPrimitive(element);
             binding.variables.add(varBind);

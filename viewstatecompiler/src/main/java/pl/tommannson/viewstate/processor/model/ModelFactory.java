@@ -26,9 +26,9 @@ public class ModelFactory {
         this.elementUtils = elementUtils;
     }
 
-    public StateBinding getOrCreateTargetClass(Map<TypeElement, StateBinding> targetClassMap,
+    public StateBindingRenderer getOrCreateTargetClass(Map<TypeElement, StateBindingRenderer> targetClassMap,
                                                 TypeElement enclosingElement) {
-        StateBinding bindingClass = targetClassMap.get(enclosingElement);
+        StateBindingRenderer bindingClass = targetClassMap.get(enclosingElement);
         if (bindingClass == null) {
             TypeName targetType = TypeName.get(enclosingElement.asType());
             if (targetType instanceof ParameterizedTypeName) {
@@ -43,7 +43,7 @@ public class ModelFactory {
 
             boolean isFinal = enclosingElement.getModifiers().contains(Modifier.FINAL);
 
-            bindingClass = new StateBinding(classFqcn, targetClassName, false);
+            bindingClass = new StateBindingRenderer(classFqcn, targetClassName, false);
             targetClassMap.put(enclosingElement, bindingClass);
         }
         return bindingClass;

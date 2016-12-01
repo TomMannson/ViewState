@@ -7,11 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import pl.tommannson.viewstate.annotations.ViewData;
 import pl.tommannson.viewstate.annotations.ViewState;
 
 public class MainActivity extends AppCompatActivity {
 
-    @ViewState
+    @ViewData
     String data;
 
     @Override
@@ -30,9 +31,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        MainActivityBinder.restore(this, this);
+        Object obj = getLastCustomNonConfigurationInstance();
+        MainActivityBinder.restore(this, obj);
+
+//        MainActivityBinder.restore(this, this);
         data = "asdasd";
-        MainActivityBinder.persist(this, this);
+//        MainActivityBinder.persist(this, this);
     }
 
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return MainActivityBinder.persist(this);
+    }
 }
