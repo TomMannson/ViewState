@@ -10,7 +10,7 @@ import android.view.View;
 import pl.tommannson.viewstate.annotations.ViewData;
 import pl.tommannson.viewstate.annotations.ViewState;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @ViewData
     String data;
@@ -31,16 +31,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Object obj = getLastCustomNonConfigurationInstance();
-        MainActivityBinder.restore(this, obj);
-
-//        MainActivityBinder.restore(this, this);
         data = "asdasd";
-//        MainActivityBinder.persist(this, this);
     }
 
     @Override
-    public Object onRetainCustomNonConfigurationInstance() {
+    public Object saveCustomState() {
         return MainActivityBinder.persist(this);
     }
+
+    @Override
+    public void loadCustomState(Object retainedState) {
+        MainActivityBinder.restore(this, retainedState);
+    }
+
 }
