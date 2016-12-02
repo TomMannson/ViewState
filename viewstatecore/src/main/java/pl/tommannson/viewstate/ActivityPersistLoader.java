@@ -1,4 +1,4 @@
-package pl.tomaszkrol.viewstate;
+package pl.tommannson.viewstate;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,16 +13,18 @@ public class ActivityPersistLoader {
     public static void load(FragmentActivity activity) {
 
         Object savedState = activity.getLastCustomNonConfigurationInstance();
+
+        List<Fragment> fragments = activity.getSupportFragmentManager().getFragments();
+        int fragmentCount = 0;
+        if (fragments != null) {
+            fragmentCount = fragments.size();
+        }
+
+        Object[] configState = (Object[]) savedState;
+
         if (savedState != null) {
-            List<Fragment> fragments = activity.getSupportFragmentManager().getFragments();
-            int fragmentCount = 0;
-            if (fragments != null) {
-                fragmentCount = fragments.size();
-            }
-
-            Object[] configState = (Object[]) savedState;
-
             int fragmentPosition = 0;
+
             if (fragments != null) {
                 for (int stateIterator = 0; fragmentPosition < fragments.size(); stateIterator++) {
                     if ((fragments.get(fragmentPosition) instanceof Persistable)) {
@@ -46,7 +48,7 @@ public class ActivityPersistLoader {
         }
     }
 
-    public static Object persist(FragmentActivity activity){
+    public static Object persist(FragmentActivity activity) {
         List<Fragment> fragments = activity.getSupportFragmentManager().getFragments();
         int fragmentCount = 0;
         if (fragments != null) {
@@ -55,19 +57,18 @@ public class ActivityPersistLoader {
         Object[] configState = new Object[fragmentCount * 2 + 1];
 
         int fragmentPosition = 0;
-        if(fragments != null) {
+        if (fragments != null) {
             for (int stateIterator = 0; fragmentPosition < fragments.size(); stateIterator++) {
-                if(fragments.get(fragmentPosition) instanceof Persistable){
+                if (fragments.get(fragmentPosition) instanceof Persistable) {
                     Persistable fragmentToLoad = (Persistable) fragments.get(fragmentPosition);
                     configState[stateIterator] = fragmentToLoad.saveCustomState();
                     stateIterator++;
                     fragmentPosition++;
-                    if(fragmentToLoad instanceof PersistableFragment) {
+                    if (fragmentToLoad instanceof PersistableFragment) {
                         PersistableFragment pFragment = (PersistableFragment) fragmentToLoad;
                         configState[stateIterator] = pFragment.saveChildStateState();
                     }
-                }
-                else{
+                } else {
                     stateIterator++;
                     fragmentPosition++;
                 }

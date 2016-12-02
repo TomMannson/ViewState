@@ -1,4 +1,4 @@
-package pl.tomaszkrol.viewstate;
+package pl.tommannson.viewstate;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
