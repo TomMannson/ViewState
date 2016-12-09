@@ -18,6 +18,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -28,8 +31,17 @@ dependencies {
     compile 'javax.annotation:jsr250-api:1.0'
 
     //viewstate
-    apt files('libs/viewstatecompiler.jar')//project(':viewstatecompiler')
+
     compile 'com.squareup:javapoet:1.6.0'
+
+//    apt 'viewstate:viewstatecompiler:unspecified'
+//    compile 'viewstate:viewstateannotations:unspecified'
+//    compile 'viewstate:viewstatecore:unspecified'
+//    apt 'com.tommannson.viewstate:viewstatecompiler:0.1'
+//    compile 'com.tommannson.viewstate:viewstateannotations:0.1'
+//    compile 'com.tommannson.viewstate:viewstatecore:0.1'
+
+    apt files('libs/viewstatecompiler.jar')//project(':viewstatecompiler')
     compile project(':viewstateannotations')
     compile project(':viewstatecore')
 }

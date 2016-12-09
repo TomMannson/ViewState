@@ -1,4 +1,4 @@
-package pl.tommannson.viewstate;
+package com.tommannson.viewstate;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;

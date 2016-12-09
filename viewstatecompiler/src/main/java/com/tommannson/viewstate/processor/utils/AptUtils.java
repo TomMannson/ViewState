@@ -1,7 +1,8 @@
-package pl.tommannson.viewstate.processor.utils;
+package com.tommannson.viewstate.processor.utils;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
 /**
@@ -72,5 +73,11 @@ public class AptUtils {
 //        }
 //
 //        return hasError;
+//    }
+
+//    public static boolean isSubTypeOfType(){
+//        TypeMirror parameterTypes = mirror.getParameterTypes();
+//        TypeMirror typeOfE = processingEnv.getElementUtils().getTypeElement(E.class.getName()).asType();
+//        boolean isSubTypeOfE = processingEnv.getTypeUtils().isSubtype(parameterType, eventType)
 //    }
 }

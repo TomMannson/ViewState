@@ -3,8 +3,9 @@ package com.example.tomaszkrol.viewstate;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import pl.tommannson.viewstate.ActivityPersistLoader;
-import pl.tommannson.viewstate.Persistable;
+import com.tommannson.viewstate.ActivityPersistLoader;
+import com.tommannson.viewstate.Persistable;
+
 
 /**
  * Created by tomasz.krol on 2016-12-01.

@@ -2,7 +2,8 @@ package com.example.tomaszkrol.viewstate;
 
 import android.support.v4.app.Fragment;
 
-import pl.tommannson.viewstate.Persistable;
+import com.tommannson.viewstate.Persistable;
+
 
 /**
  * Created by tomasz.krol on 2016-12-01.

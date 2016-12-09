@@ -3,17 +3,50 @@ package com.example.tomaszkrol.viewstate;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import pl.tommannson.viewstate.annotations.ViewData;
-import pl.tommannson.viewstate.annotations.ViewState;
+import com.tommannson.viewstate.annotations.ActivityArg;
+import com.tommannson.viewstate.annotations.ViewData;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
 
 public class MainActivity extends BaseActivity {
 
+
+    @ActivityArg
     @ViewData
-    String data;
+    String[] data;
+
+    @ActivityArg
+    @ViewData
+    ArrayList<String> data2;
+
+    @ActivityArg
+    @ViewData
+    byte[] data3;
+
+    @ActivityArg
+    @ViewData
+    Serializable data4;
+
+    @ActivityArg
+    Data data5;
+
+    @ActivityArg
+    CharSequence data6;
+
+    @ActivityArg
+    CharSequence[] data7;
+
+    @ActivityArg
+    ArrayList<CharSequence> data8;
+
+    @ActivityArg
+    @ViewData
+    ArrayList<Integer> data9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +64,9 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        data = "asdasd";
+//        savedInstanceState.put
+
+//        data = "asdasd";
     }
 
     @Override

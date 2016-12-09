@@ -1,5 +1,6 @@
-package pl.tommannson.viewstate;
+package com.tommannson.viewstate;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
@@ -19,6 +20,8 @@ public class ActivityPersistLoader {
         if (fragments != null) {
             fragmentCount = fragments.size();
         }
+        Bundle bb = new Bundle();
+
 
         Object[] configState = (Object[]) savedState;
 

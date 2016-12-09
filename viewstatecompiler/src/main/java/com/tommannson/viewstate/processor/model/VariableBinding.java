@@ -1,4 +1,4 @@
-package pl.tommannson.viewstate.processor.model;
+package com.tommannson.viewstate.processor.model;
 
 import javax.lang.model.type.TypeMirror;
 

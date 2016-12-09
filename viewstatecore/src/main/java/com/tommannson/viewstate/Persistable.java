@@ -1,4 +1,4 @@
-package pl.tommannson.viewstate;
+package com.tommannson.viewstate;
 
 /**
  * Created by tomasz.krol on 2016-12-01.

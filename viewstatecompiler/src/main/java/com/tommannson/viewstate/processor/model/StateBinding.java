@@ -1,4 +1,4 @@
-package pl.tommannson.viewstate.processor.model;
+package com.tommannson.viewstate.processor.model;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;

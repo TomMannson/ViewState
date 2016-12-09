@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import pl.tommannson.viewstate.annotations.ViewData;
+import com.tommannson.viewstate.annotations.ViewData;
+
 
 /**
  * Created by tomasz.krol on 2016-12-01.
@@ -20,6 +21,7 @@ public class MainFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        savedInstanceState.put
     }
 
     @Nullable

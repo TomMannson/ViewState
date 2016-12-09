@@ -1,7 +1,35 @@
 apply plugin: 'java'
 
+//apply plugin: 'maven'
+//apply plugin: 'maven-publish'
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'ViewState'
+
+    publishedGroupId = 'com.tommannson.viewstate'
+    libraryName = 'ViewState-CompilerModule'
+    artifact = 'viewstatecompiler'
+
+    libraryDescription = 'Easy librare to save android configuration-changes sesitive Data'
+
+    siteUrl = 'https://github.com/TomMannson/ViewState'
+    gitUrl = 'https://github.com/TomMannson/ViewState.git'
+
+    libraryVersion = '0.1'
+
+    developerId = 'tommannson'
+    developerName = 'Tomas Król'
+    developerEmail = 'tomasz.krol@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -12,3 +40,47 @@ dependencies {
     compile 'com.squareup:javapoet:1.6.0'
     compile project(':viewstateannotations')
 }
+
+//uploadArchives {
+//    repositories.mavenDeployer {
+//        repository(url: "file:///E:/Tomasz_Krol/Repo/private/maven-repository")
+//    }
+//}
+
+//publishing {
+//    repositories {
+//        maven {
+//            url "https://mymavenrepo.com/repo/3PvTM3M1k48JTgJ7tzAj/"
+//        }
+//    }
+//
+//    publications {
+//        mavenJava(MavenPublication) {
+//            groupId 'com.tommannson.viewstate'
+//            artifactId 'viewstatecompiler'
+//            version '0.1-SNAPSHOT'
+//
+//            from components.java
+//        }
+//    }
+//}
+
+//version = '0.1'
+//
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: "https://dl.bintray.com/tommannson/ViewState"){
+//                authentication(userName: "tommannson", password: "Supernowa1")
+//                pom {
+//                    groupId = "com.tommannson.viewstate"
+//                    artifactId = "viewstatecompiler"
+//                    version = project.version
+//                }
+//            }
+//        }
+//    }
+//}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
