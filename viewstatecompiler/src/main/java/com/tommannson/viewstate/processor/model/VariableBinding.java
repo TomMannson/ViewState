@@ -10,4 +10,13 @@ public class VariableBinding {
     public String fieldName;
     public boolean isPrimitive;
     public TypeMirror fieldTypeMinor;
+    public boolean isSerializable;
+    public boolean isCharSequence;
+    public boolean isCharSequenceArray;
+    public boolean isNotAllowedType;
+
+    public boolean isArrayList;
+    public boolean isInteger;
+    public boolean isString;
+    public boolean isParcelable;
 }

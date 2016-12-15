@@ -5,7 +5,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Generated;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.element.Modifier;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -61,7 +60,9 @@ public class ActivityIntentBuilderRenderer {
 
     private void addVariablesSection(TypeSpec.Builder result) {
         for (VariableBinding variable : variables) {
-            result.addField(FieldSpec.builder(TypeName.get(variable.fieldTypeMinor), variable.fieldName).build());
+            result.addField(
+                    FieldSpec.builder(TypeName.get(variable.fieldTypeMinor),
+                            variable.fieldName, Modifier.PRIVATE).build());
         }
     }
 
@@ -88,50 +89,68 @@ public class ActivityIntentBuilderRenderer {
                 .addModifiers(PUBLIC)
                 .addParameter(ClassName.get("android.content", "Context"), "ctx")
                 .returns(ClassName.get("android.content", "Intent"))
-                .addStatement("Intent starter = new Intent(ctx, " + targetClassName.simpleName() + ".class"  )
-                .addStatement("$T bundle = new $T()", bundleClass, bundleClass);
+                .addStatement("Intent starter = new Intent(ctx, " + targetClassName.simpleName() + ".class)");
+//                .addStatement("$T bundle = new $T()", bundleClass, bundleClass);
 
         for (VariableBinding variable : variables) {
 
 
-            method.addStatement()
+            method.addStatement("starter." + selectMethodNameForTypeVariable(variable)
+                    + "(\"" + variable.fieldName + "_KEY\", " + variable.fieldName + ")");
         }
-
 
         method.addStatement("return starter");
 
         result.addMethod(method.build());
     }
 
-    private String selectMethodNameForTypeVariable(VariableBinding variable){
-        if(variable.isPrimitive){
-            if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.BOOLEAN)){
-                return "putBoolean";
-            }
-            else if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.BYTE)){
-                return "putByte";
-            }
-            else if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.CHAR)){
+    private String selectMethodNameForTypeVariable(VariableBinding variable) {
 
+//        if (variable) {
+//            if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.BOOLEAN)) {
+//                return "putBoolean";
+//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.BYTE)) {
+//                return "putByte";
+//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.CHAR)) {
+//                return "putChar";
+//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.DOUBLE)) {
+//                return "putDouble";
+//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.FLOAT)) {
+//                return "putFloat";
+//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.INT)) {
+//                return "putInt";
+//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.LONG)) {
+//                return "putLong";
+//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.SHORT)) {
+//                return "putShort";
+//            }
+//        }
+//        else if (variable.isSerializable) {
+//            return "putSerializable";
+//        }
+        if (variable.isArrayList) {
+            if (variable.isString) {
+                return "putStringArrayListExtra";
             }
-            else if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.DOUBLE)){
-
+            else if (variable.isCharSequence) {
+                return "putCharSequenceArrayListExtra";
             }
-            else if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.FLOAT)){
-
+            else if (variable.isInteger) {
+                return "putIntegerArrayListExtra";
             }
-            else if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.INT)){
-
+            else if (variable.isParcelable) {
+                return "putParcelableArrayListExtra";
             }
-            else if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.LONG)){
-
+            else if (variable.isSerializable) {
+                return "putExtra";
             }
-            else if(TypeName.get(variable.fieldTypeMinor).equals(TypeName.SHORT)){
-
+            else {
+                throw new RuntimeException("not supported type");
             }
         }
-    }
 
+        return "putExtra";
+    }
 
 
     private MethodSpec createPersistMethod() {

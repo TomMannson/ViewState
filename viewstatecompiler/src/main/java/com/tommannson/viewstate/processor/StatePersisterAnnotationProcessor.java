@@ -1,8 +1,17 @@
 package com.tommannson.viewstate.processor;
 
 import com.google.auto.service.AutoService;
+import com.tommannson.viewstate.annotations.ActivityArg;
+import com.tommannson.viewstate.annotations.FragmentArg;
+import com.tommannson.viewstate.annotations.ViewData;
+import com.tommannson.viewstate.processor.model.ActivityIntentBuilderRenderer;
+import com.tommannson.viewstate.processor.model.ModelFactory;
+import com.tommannson.viewstate.processor.model.StateBindingRenderer;
+import com.tommannson.viewstate.processor.model.VariableBinding;
+import com.tommannson.viewstate.processor.utils.AptUtils;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -16,18 +25,10 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-
-import com.tommannson.viewstate.annotations.ActivityArg;
-import com.tommannson.viewstate.annotations.FragmentArg;
-import com.tommannson.viewstate.annotations.ViewData;
-
-import com.tommannson.viewstate.processor.model.ActivityIntentBuilderRenderer;
-import com.tommannson.viewstate.processor.model.ModelFactory;
-import com.tommannson.viewstate.processor.model.StateBindingRenderer;
-import com.tommannson.viewstate.processor.model.VariableBinding;
-import com.tommannson.viewstate.processor.utils.AptUtils;
 
 
 @AutoService(Processor.class)
@@ -84,7 +85,7 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
 
                 bindingClass.generateJava().writeTo(filer);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
@@ -134,7 +135,43 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             varBind.fieldTypeMinor = element.asType();
             varBind.fieldName = element.getSimpleName().toString();
             varBind.isPrimitive = AptUtils.isPrimitive(element);
-//            varBind.isSerializableOrParcelable =
+
+            TypeElement serialType = elementUtils.getTypeElement(Serializable.class.getCanonicalName());
+            TypeElement parcelableType = elementUtils.getTypeElement("android.os.Parcelable");
+            TypeElement arrayListType = elementUtils.getTypeElement(ArrayList.class.getCanonicalName());
+            TypeElement charSequenceType = elementUtils.getTypeElement(CharSequence.class.getCanonicalName());
+            TypeElement integerType = elementUtils.getTypeElement(Integer.class.getCanonicalName());
+            TypeElement stringType = elementUtils.getTypeElement(String.class.getCanonicalName());
+
+
+
+//                    TypeElement charSequence = elementUtils.getTypeElement("android.os.Parcelable");
+            if (!varBind.isPrimitive) {
+
+                TypeElement type = (TypeElement) typeUtils.asElement(varBind.fieldTypeMinor);
+                if (type != null) {
+
+                    TypeMirror testElement = element.asType();
+
+                    if (typeUtils.isAssignable(arrayListType.asType(), type.asType())) {
+                        varBind.isArrayList = true;
+                        DeclaredType inner = ((DeclaredType)element.asType());
+                        if(inner.getTypeArguments().size() == 1) {
+                            testElement = inner.getTypeArguments().get(0);
+
+                            varBind.isCharSequence = typeUtils.isAssignable(testElement, charSequenceType.asType());
+                            varBind.isInteger = typeUtils.isAssignable(testElement, integerType.asType());
+                            varBind.isString = typeUtils.isAssignable(testElement, stringType.asType());
+                            varBind.isParcelable = typeUtils.isAssignable(testElement, parcelableType.asType());
+                        }
+                    }
+                }
+
+                varBind.isSerializable = typeUtils.isAssignable(varBind.fieldTypeMinor, serialType.asType());
+
+
+            }
+
             binding.variables.add(varBind);
 
         }

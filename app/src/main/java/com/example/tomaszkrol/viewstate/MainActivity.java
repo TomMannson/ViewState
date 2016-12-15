@@ -1,6 +1,8 @@
 package com.example.tomaszkrol.viewstate;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -15,38 +17,42 @@ import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
+    @ActivityArg
+    int intData;
 
     @ActivityArg
-    @ViewData
-    String[] data;
+    short shortData;
 
     @ActivityArg
-    @ViewData
-    ArrayList<String> data2;
+    byte byteData;
 
     @ActivityArg
-    @ViewData
-    byte[] data3;
+    long longData;
 
     @ActivityArg
-    @ViewData
-    Serializable data4;
+    String stringData;
 
     @ActivityArg
-    Data data5;
+    float floatData;
 
     @ActivityArg
-    CharSequence data6;
+    double doubleData;
 
     @ActivityArg
-    CharSequence[] data7;
+    boolean booleanData;
 
     @ActivityArg
-    ArrayList<CharSequence> data8;
+    ArrayList<CharSequence> dataArrayListCharSeq;
 
     @ActivityArg
-    @ViewData
-    ArrayList<Integer> data9;
+    ArrayList<Integer> dataArrayListInteger;
+
+    @ActivityArg
+    ArrayList<String> dataArrayListString;
+
+
+    ArrayList<Parcelable> dataArrayListParcelable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,18 +72,41 @@ public class MainActivity extends BaseActivity {
         });
 
 //        savedInstanceState.put
+//        getIntent().putParcelableArrayListExtra()
 
 //        data = "asdasd";
+//        new TestActivityIntentBuilder()
+        Intent intent = new TestActivityIntentBuilder()
+                .data(null)
+                .data3(new byte[] { 1, 3, 4,1})
+                .data4(new Data())
+                .build(this);
+        startActivity(intent);
+//                .
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+//        CharSequence ass = "asdasd";
+//        ArrayList<CharSequence> asss = new ArrayList<>();
+//        asss.add(ass);
+//
+//        outState.putSerializable("DATA1", new byte[]{1});
+//        outState.putSerializable("DATA2", new char[]{'a'});
+//        outState.putCharSequence("DATA3", ass);
     }
 
     @Override
     public Object saveCustomState() {
-        return MainActivityBinder.persist(this);
+        return null;
+//        return MainActivityBinder.persist(this);
     }
 
     @Override
     public void loadCustomState(Object retainedState) {
-        MainActivityBinder.restore(this, retainedState);
+//        MainActivityBinder.restore(this, retainedState);
     }
 
 }

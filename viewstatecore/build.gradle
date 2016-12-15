@@ -18,7 +18,7 @@ ext {
     siteUrl = 'https://github.com/TomMannson/ViewState'
     gitUrl = 'https://github.com/TomMannson/ViewState.git'
 
-    libraryVersion = '0.1'
+    libraryVersion = '0.2.0'
 
     developerId = 'tommannson'
     developerName = 'Tomas Król'
