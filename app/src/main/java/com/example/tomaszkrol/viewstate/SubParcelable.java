@@ -8,6 +8,10 @@ import android.os.Parcelable;
  */
 
 public class SubParcelable implements Parcelable {
+
+    public SubParcelable() {
+    }
+
     protected SubParcelable(Parcel in) {
     }
 

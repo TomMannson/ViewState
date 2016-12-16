@@ -1,19 +1,18 @@
 package com.example.tomaszkrol.viewstate;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.tommannson.viewstate.annotations.ActivityArg;
 import com.tommannson.viewstate.annotations.ViewData;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by tomasz.krol on 2016-12-14.
  */
 
-public class TestActivity extends Activity {
+public class TestActivity extends BaseActivity {
 
     @ActivityArg
     int intData;
@@ -34,6 +33,7 @@ public class TestActivity extends Activity {
     double doubleData;
 
     @ActivityArg
+    @ViewData
     boolean booleanData;
 
     @ActivityArg
@@ -63,6 +63,10 @@ public class TestActivity extends Activity {
 
     @ActivityArg
     @ViewData
+    SubParcelable[] parcelableArray;
+
+    @ActivityArg
+    @ViewData
     ArrayList<String> stringArrayList;
 
     @ActivityArg
@@ -78,7 +82,21 @@ public class TestActivity extends Activity {
     ArrayList<SubParcelable> parcelableArrayList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TestActivityIntentBuilder.getDataFromIntent(this);
+        this.toString();
+
+    }
+
+    @Override
+    public Object saveCustomState() {
+//        return null;
+        return TestActivityBinder.persist(this);
+    }
+
+    @Override
+    public void loadCustomState(Object retainedState) {
+        TestActivityBinder.restore(this, retainedState);
     }
 }

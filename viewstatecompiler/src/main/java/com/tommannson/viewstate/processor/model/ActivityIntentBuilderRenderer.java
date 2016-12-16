@@ -135,17 +135,46 @@ public class ActivityIntentBuilderRenderer {
         for (VariableBinding variable : variables) {
 
             TypeElement acceptableParcelableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement("android.os.Parcelable");
+            ClassName parcelableType = ClassName.get(acceptableParcelableElement);
+            TypeName variableType = ClassName.get(variable.fieldTypeMinor);
+            String fieldName = variable.fieldName;
 
             if (variable.isPrimitive) {
                 String defaultValue = DefaultValueUtils.getDefaultValue(ClassName.get(variable.fieldTypeMinor), null);
                 method.addStatement("activity." + variable.fieldName + " = (" + variable.fieldType + ") intent." + getExtraMethodName(variable)
                         + "(\"" + variable.fieldName + "_KEY\", " + defaultValue + ")");
-            }
-            else if (variable.isArrayList && StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableParcelableElement.asType())) {
+            } else if (variable.isArrayList && StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableParcelableElement.asType())) {
                 method.addStatement("activity." + variable.fieldName + " = intent." + getExtraMethodName(variable)
                         + "(\"" + variable.fieldName + "_KEY\")");
-            }
-            else {
+            } else if (variable.isArray && StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableParcelableElement.asType())) {
+
+                TypeName subType = ClassName.get(variable.subType);
+
+//                method.beginControlFlow(" if( intent.getParcelableArrayExtra(\"" + variable.fieldName + "_KEY\") != null )");
+//
+//                method.addStatement("Parcelable[] array = intent.getParcelableArrayExtra(\"" + variable.fieldName + "_KEY)");
+//                method.addStatement(variable.fieldType + " destArray = new "+ variable.fieldType.substring(0, variable.fieldType.length() - 1 ) + "array.length]");
+//                method.beginControlFlow("for( int i = 0; i < array.length; i++ )");
+//
+//                method.addStatement("destArray[i] = ( "+ variable.subType + " ) array[i]");
+//
+//                method.endControlFlow();
+//                method.addStatement("activity." + variable.fieldName + " = destArray");
+//                method.endControlFlow();
+
+                method.beginControlFlow(" if( intent.getParcelableArrayExtra(\"$L_KEY\") != null )", fieldName);
+//
+                method.addStatement("$T[] array = intent.getParcelableArrayExtra(\"$L_KEY\")", parcelableType, fieldName);
+                method.addStatement("$1T[] destArray = new $1T[array.length]", subType);
+                method.beginControlFlow("for( int i = 0; i < array.length; i++ )");
+
+                method.addStatement("destArray[i] = ( $T ) array[i]", subType);
+
+                method.endControlFlow();
+                method.addStatement("activity.$L = destArray", fieldName);
+                method.endControlFlow();
+
+            } else {
                 method.addStatement("activity." + variable.fieldName + " = (" + variable.fieldType + ") intent." + getExtraMethodName(variable)
                         + "(\"" + variable.fieldName + "_KEY\")");
             }
@@ -179,6 +208,7 @@ public class ActivityIntentBuilderRenderer {
         builder.append("get");
 
         TypeElement acceptableSerializableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement(Serializable.class.getCanonicalName());
+//        TypeElement acceptablePercelableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement(Serializable.class.getCanonicalName());
 
         if (variable.isPrimitive) {
             builder.append(CaseUtils.toTitleCase(variable.fieldType));
