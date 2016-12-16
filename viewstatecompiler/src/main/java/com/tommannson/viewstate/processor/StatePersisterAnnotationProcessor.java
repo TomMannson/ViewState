@@ -25,6 +25,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -38,11 +39,14 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
     private static final String PRIVATE = "private";
     private static final String STATIC = "static";
 
-    private Elements elementUtils;
-    private Types typeUtils;
-    private Filer filer;
+    static public Elements elementUtils;
+    public static Types typeUtils;
+    public static Filer filer;
 
     ModelFactory factory;
+    private TypeElement serialType;
+    private TypeElement parcelableType;
+    private TypeElement arrayListType;
 
     @Override
     public synchronized void init(ProcessingEnvironment env) {
@@ -53,6 +57,7 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
         filer = env.getFiler();
 
         factory = new ModelFactory(elementUtils);
+        arrayListType = elementUtils.getTypeElement("java.util.ArrayList");
     }
 
     @Override
@@ -97,6 +102,15 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
     }
 
     private Map<TypeElement, StateBindingRenderer> findAndParseBindableTargets(RoundEnvironment env) {
+
+//        serialType = elementUtils.getTypeElement(Serializable.class.getCanonicalName());
+//        parcelableType = elementUtils.getTypeElement("android.os.Parcelable");
+//        arrayListType = elementUtils.getTypeElement(ArrayList.class.getCanonicalName());
+//        charSequenceType = elementUtils.getTypeElement(CharSequence.class.getCanonicalName());
+//        integerType = elementUtils.getTypeElement(Integer.class.getCanonicalName());
+//        stringType = elementUtils.getTypeElement(String.class.getCanonicalName());
+
+
         Map<TypeElement, StateBindingRenderer> targetClassMap = new LinkedHashMap<>();
         Set<TypeElement> erasedTargetNames = new LinkedHashSet<>();
 
@@ -111,7 +125,7 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             varBind.fieldType = element.asType().toString();
             varBind.fieldTypeMinor = element.asType();
             varBind.fieldName = element.getSimpleName().toString();
-            varBind.isPrimitive = AptUtils.isPrimitive(element);
+            varBind.isPrimitive = AptUtils.isPrimitive(element.asType());
             binding.variables.add(varBind);
 
         }
@@ -134,14 +148,10 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             varBind.fieldType = element.asType().toString();
             varBind.fieldTypeMinor = element.asType();
             varBind.fieldName = element.getSimpleName().toString();
-            varBind.isPrimitive = AptUtils.isPrimitive(element);
+            varBind.isPrimitive = AptUtils.isPrimitive(element.asType());
+            varBind.isArray = AptUtils.isArray(element);
 
-            TypeElement serialType = elementUtils.getTypeElement(Serializable.class.getCanonicalName());
-            TypeElement parcelableType = elementUtils.getTypeElement("android.os.Parcelable");
-            TypeElement arrayListType = elementUtils.getTypeElement(ArrayList.class.getCanonicalName());
-            TypeElement charSequenceType = elementUtils.getTypeElement(CharSequence.class.getCanonicalName());
-            TypeElement integerType = elementUtils.getTypeElement(Integer.class.getCanonicalName());
-            TypeElement stringType = elementUtils.getTypeElement(String.class.getCanonicalName());
+
 
 
 
@@ -151,23 +161,31 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
                 TypeElement type = (TypeElement) typeUtils.asElement(varBind.fieldTypeMinor);
                 if (type != null) {
 
-                    TypeMirror testElement = element.asType();
+//                    TypeMirror testElement = element.asType();
 
-                    if (typeUtils.isAssignable(arrayListType.asType(), type.asType())) {
+                    if (typeUtils.isAssignable(type.asType(), arrayListType.asType())) {
                         varBind.isArrayList = true;
+
                         DeclaredType inner = ((DeclaredType)element.asType());
                         if(inner.getTypeArguments().size() == 1) {
-                            testElement = inner.getTypeArguments().get(0);
+                            varBind.subType = inner.getTypeArguments().get(0);
 
-                            varBind.isCharSequence = typeUtils.isAssignable(testElement, charSequenceType.asType());
-                            varBind.isInteger = typeUtils.isAssignable(testElement, integerType.asType());
-                            varBind.isString = typeUtils.isAssignable(testElement, stringType.asType());
-                            varBind.isParcelable = typeUtils.isAssignable(testElement, parcelableType.asType());
                         }
                     }
                 }
+                else if(varBind.isArray){
 
-                varBind.isSerializable = typeUtils.isAssignable(varBind.fieldTypeMinor, serialType.asType());
+                    ArrayType arrayType = (ArrayType)element.asType();
+                    varBind.subType = arrayType.getComponentType();
+                    varBind.isPrimitiveSubType = AptUtils.isPrimitive(varBind.subType);
+//                        testElement = arrayType.getComponentType();
+
+//                        varBind.isCharSequence = typeUtils.isAssignable(testElement, charSequenceType.asType());
+//                        varBind.isInteger = typeUtils.isAssignable(testElement, integerType.asType());
+//                        varBind.isString = typeUtils.isAssignable(testElement, stringType.asType());
+//                        varBind.isParcelable = typeUtils.isAssignable(testElement, parcelableType.asType());
+                }
+
 
 
             }
@@ -194,7 +212,7 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             varBind.fieldType = element.asType().toString();
             varBind.fieldTypeMinor = element.asType();
             varBind.fieldName = element.getSimpleName().toString();
-            varBind.isPrimitive = AptUtils.isPrimitive(element);
+            varBind.isPrimitive = AptUtils.isPrimitive(element.asType());
             binding.variables.add(varBind);
 
         }

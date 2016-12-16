@@ -1,8 +1,9 @@
 package com.tommannson.viewstate.processor.utils;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
@@ -20,24 +21,24 @@ public class AptUtils {
         return type.getQualifiedName().toString().substring(packageLen).replace('.', '$');
     }
 
-    public static boolean isPrimitive(Element element) {
-        String type = element.asType().toString();
-        if ("boolean".equals(type)) {
-            return true;
-        } else if ("char".equals(type)) {
-            return true;
-        } else if ("byte".equals(type)) {
-            return true;
-        } else if ("short".equals(type)) {
-            return true;
-        } else if ("int".equals(type)) {
-            return true;
-        } else if ("long".equals(type)) {
-            return true;
-        } else if ("float".equals(type)) {
-            return true;
-        } else if ("double".equals(type)) {
-            return true;
+    public static boolean isPrimitive(TypeMirror input) {
+
+        try {
+            PrimitiveType type = (PrimitiveType) input;
+            if (type != null)
+                return true;
+        } catch (Exception ex) {
+        }
+
+        return false;
+    }
+
+    public static boolean isArray(Element element) {
+        try {
+            ArrayType type = (ArrayType) element.asType();
+            if (type != null)
+                return true;
+        } catch (Exception ex) {
         }
 
         return false;

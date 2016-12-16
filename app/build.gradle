@@ -37,9 +37,9 @@ dependencies {
 //    apt 'viewstate:viewstatecompiler:unspecified'
 //    compile 'viewstate:viewstateannotations:unspecified'
 //    compile 'viewstate:viewstatecore:unspecified'
-//    apt 'com.tommannson.viewstate:viewstatecompiler:0.1'
-//    compile 'com.tommannson.viewstate:viewstateannotations:0.1'
-//    compile 'com.tommannson.viewstate:viewstatecore:0.1'
+//    apt 'com.tommannson.viewstate:viewstatecompiler:0.2.0'
+//    compile 'com.tommannson.viewstate:viewstateannotations:0.2.0'
+//    compile 'com.tommannson.viewstate:viewstatecore:0.2.0'
 
     apt files('libs/viewstatecompiler.jar')//project(':viewstatecompiler')
     compile project(':viewstateannotations')

@@ -17,41 +17,41 @@ import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
-    @ActivityArg
-    int intData;
-
-    @ActivityArg
-    short shortData;
-
-    @ActivityArg
-    byte byteData;
-
-    @ActivityArg
-    long longData;
-
-    @ActivityArg
-    String stringData;
-
-    @ActivityArg
-    float floatData;
-
-    @ActivityArg
-    double doubleData;
-
-    @ActivityArg
-    boolean booleanData;
-
-    @ActivityArg
-    ArrayList<CharSequence> dataArrayListCharSeq;
-
-    @ActivityArg
-    ArrayList<Integer> dataArrayListInteger;
-
-    @ActivityArg
-    ArrayList<String> dataArrayListString;
-
-
-    ArrayList<Parcelable> dataArrayListParcelable;
+//    @ActivityArg
+//    int intData;
+//
+//    @ActivityArg
+//    short shortData;
+//
+//    @ActivityArg
+//    byte byteData;
+//
+//    @ActivityArg
+//    long longData;
+//
+//    @ActivityArg
+//    String stringData;
+//
+//    @ActivityArg
+//    float floatData;
+//
+//    @ActivityArg
+//    double doubleData;
+//
+//    @ActivityArg
+//    boolean booleanData;
+//
+//    @ActivityArg
+//    ArrayList<CharSequence> dataArrayListCharSeq;
+//
+//    @ActivityArg
+//    ArrayList<Integer> dataArrayListInteger;
+//
+//    @ActivityArg
+//    ArrayList<String> dataArrayListString;
+//
+//
+//    ArrayList<Parcelable> dataArrayListParcelable;
 
 
     @Override
@@ -71,18 +71,8 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-//        savedInstanceState.put
-//        getIntent().putParcelableArrayListExtra()
 
-//        data = "asdasd";
-//        new TestActivityIntentBuilder()
-        Intent intent = new TestActivityIntentBuilder()
-                .data(null)
-                .data3(new byte[] { 1, 3, 4,1})
-                .data4(new Data())
-                .build(this);
-        startActivity(intent);
-//                .
+
     }
 
     @Override

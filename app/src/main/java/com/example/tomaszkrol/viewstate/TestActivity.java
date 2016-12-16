@@ -28,9 +28,6 @@ public class TestActivity extends Activity {
     long longData;
 
     @ActivityArg
-    String stringData;
-
-    @ActivityArg
     float floatData;
 
     @ActivityArg
@@ -39,44 +36,46 @@ public class TestActivity extends Activity {
     @ActivityArg
     boolean booleanData;
 
+    @ActivityArg
+    String stringData;
 
+    @ActivityArg
+    CharSequence charSeqData;
 
-
-
+    @ActivityArg
+    SubParcelable parcelableData;
 
     @ActivityArg
     @ViewData
-    String[] data;
+    byte[] byteArrayData;
 
     @ActivityArg
     @ViewData
-    ArrayList<String> data2;
+    int[] intArrayData;
 
     @ActivityArg
     @ViewData
-    byte[] data3;
-
-
+    String[] stringArray;
 
     @ActivityArg
     @ViewData
-    Serializable data4;
-
-    @ActivityArg
-    Data data5;
-
-//    @ActivityArg
-//    CharSequence data6;
-
-//    @ActivityArg
-//    CharSequence[] data7;
-//
-//    @ActivityArg
-//    ArrayList<CharSequence> data8;
+    CharSequence[] charSeqArray;
 
     @ActivityArg
     @ViewData
-    ArrayList<Integer> data9;
+    ArrayList<String> stringArrayList;
+
+    @ActivityArg
+    @ViewData
+    ArrayList<Integer> integerArrayList;
+
+    @ActivityArg
+    @ViewData
+    ArrayList<Data> serializableArrayList;
+
+    @ActivityArg
+    @ViewData
+    ArrayList<SubParcelable> parcelableArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

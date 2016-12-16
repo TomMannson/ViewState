@@ -7,12 +7,17 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.tommannson.viewstate.processor.StatePersisterAnnotationProcessor;
+import com.tommannson.viewstate.processor.utils.CaseUtils;
+import com.tommannson.viewstate.processor.utils.DefaultValueUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -24,19 +29,38 @@ public class ActivityIntentBuilderRenderer {
 
     private static final String GENERATED_COMMENTS = "beta version ";
 
+    private String[] acceptableForReadArray =
+            new String[]{"android.os.Parcelable",
+                    String.class.getCanonicalName(),
+                    CharSequence.class.getCanonicalName()};
+
+    private String[] acceptableForReadArrayList =
+            new String[]{"android.os.Parcelable",
+                    Integer.class.getCanonicalName(),
+                    String.class.getCanonicalName(),
+                    CharSequence.class.getCanonicalName()};
+
+    private String[] acceptableForRead =
+            new String[]{"android.os.Parcelable",
+                    Integer.class.getCanonicalName(),
+                    Serializable.class.getCanonicalName(),
+                    String.class.getCanonicalName(),
+                    CharSequence.class.getCanonicalName()};
+
+    private String[] acceptableForWriteArrayList =
+            new String[]{"android.os.Parcelable",
+                    Integer.class.getCanonicalName(),
+                    String.class.getCanonicalName(),
+                    CharSequence.class.getCanonicalName()};
+
     private static final AnnotationSpec GENERATED =
             AnnotationSpec.builder(Generated.class)
                     .addMember("value", "$S", ActivityIntentBuilderRenderer.class.getName())
                     .addMember("comments", "$S", GENERATED_COMMENTS)
                     .build();
 
-
-//    private static final ClassName CONTEXT = ClassName.get("android.content", "Context");
-//    private static final ClassName PERSIST_FRAGMENT = ClassName.get("pl.tomaszkrol.viewstate", "PersisterFragment");
-//    private static final ClassName FRAGMENT_ACTIVITY = ClassName.get("android.support.v4.app", "FragmentActivity");
-
-    public ClassName generetedClassName;
-    public ClassName targetClassName;
+    private ClassName generetedClassName;
+    private ClassName targetClassName;
     public List<VariableBinding> variables = new ArrayList<>();
 
     public ActivityIntentBuilderRenderer(ClassName generetedClassName, ClassName targetClassName) {
@@ -52,6 +76,7 @@ public class ActivityIntentBuilderRenderer {
         addVariablesSection(result);
         addMethodsSection(result);
         addBuildMethodsSection(result);
+        addGetDataFromIntentMethodsSection(result);
 
         return JavaFile.builder(generetedClassName.packageName(), result.build())
                 .addFileComment("Generated code do not modify!")
@@ -83,19 +108,15 @@ public class ActivityIntentBuilderRenderer {
 
     private void addBuildMethodsSection(TypeSpec.Builder result) {
 
-        ClassName bundleClass = ClassName.get("android.os", "Bundle");
-
         MethodSpec.Builder method = MethodSpec.methodBuilder("build")
                 .addModifiers(PUBLIC)
                 .addParameter(ClassName.get("android.content", "Context"), "ctx")
                 .returns(ClassName.get("android.content", "Intent"))
                 .addStatement("Intent starter = new Intent(ctx, " + targetClassName.simpleName() + ".class)");
-//                .addStatement("$T bundle = new $T()", bundleClass, bundleClass);
 
         for (VariableBinding variable : variables) {
 
-
-            method.addStatement("starter." + selectMethodNameForTypeVariable(variable)
+            method.addStatement("starter." + putExtraMethodName(variable)
                     + "(\"" + variable.fieldName + "_KEY\", " + variable.fieldName + ")");
         }
 
@@ -104,110 +125,103 @@ public class ActivityIntentBuilderRenderer {
         result.addMethod(method.build());
     }
 
-    private String selectMethodNameForTypeVariable(VariableBinding variable) {
+    private void addGetDataFromIntentMethodsSection(TypeSpec.Builder result) {
 
-//        if (variable) {
-//            if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.BOOLEAN)) {
-//                return "putBoolean";
-//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.BYTE)) {
-//                return "putByte";
-//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.CHAR)) {
-//                return "putChar";
-//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.DOUBLE)) {
-//                return "putDouble";
-//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.FLOAT)) {
-//                return "putFloat";
-//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.INT)) {
-//                return "putInt";
-//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.LONG)) {
-//                return "putLong";
-//            } else if (TypeName.get(variable.fieldTypeMinor).equals(TypeName.SHORT)) {
-//                return "putShort";
-//            }
-//        }
-//        else if (variable.isSerializable) {
-//            return "putSerializable";
-//        }
-        if (variable.isArrayList) {
-            if (variable.isString) {
-                return "putStringArrayListExtra";
+        MethodSpec.Builder method = MethodSpec.methodBuilder("getDataFromIntent")
+                .addModifiers(PUBLIC, STATIC)
+                .addParameter(targetClassName, "activity")
+                .addStatement("Intent intent = activity.getIntent()");
+
+        for (VariableBinding variable : variables) {
+
+            TypeElement acceptableParcelableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement("android.os.Parcelable");
+
+            if (variable.isPrimitive) {
+                String defaultValue = DefaultValueUtils.getDefaultValue(ClassName.get(variable.fieldTypeMinor), null);
+                method.addStatement("activity." + variable.fieldName + " = (" + variable.fieldType + ") intent." + getExtraMethodName(variable)
+                        + "(\"" + variable.fieldName + "_KEY\", " + defaultValue + ")");
             }
-            else if (variable.isCharSequence) {
-                return "putCharSequenceArrayListExtra";
-            }
-            else if (variable.isInteger) {
-                return "putIntegerArrayListExtra";
-            }
-            else if (variable.isParcelable) {
-                return "putParcelableArrayListExtra";
-            }
-            else if (variable.isSerializable) {
-                return "putExtra";
+            else if (variable.isArrayList && StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableParcelableElement.asType())) {
+                method.addStatement("activity." + variable.fieldName + " = intent." + getExtraMethodName(variable)
+                        + "(\"" + variable.fieldName + "_KEY\")");
             }
             else {
-                throw new RuntimeException("not supported type");
+                method.addStatement("activity." + variable.fieldName + " = (" + variable.fieldType + ") intent." + getExtraMethodName(variable)
+                        + "(\"" + variable.fieldName + "_KEY\")");
             }
         }
 
-        return "putExtra";
+        result.addMethod(method.build());
     }
 
+    private String putExtraMethodName(VariableBinding variable) {
 
-    private MethodSpec createPersistMethod() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("put");
 
-        String holderClassName = targetClassName.simpleName() + "_Holder";
+        TypeElement acceptableSerializableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement(Serializable.class.getCanonicalName());
 
-        MethodSpec.Builder result = MethodSpec.methodBuilder("persist")
-                .addModifiers(PUBLIC)
-                .addModifiers(STATIC)
-                .addParameter(targetClassName, "target")
-                .returns(TypeName.OBJECT)
-                .addStatement(holderClassName + " holder = new " + holderClassName + "()");
-//
-
-        for (VariableBinding variable : variables) {
-            String ass = String.format("holder.%s = target.%s", variable.fieldName, variable.fieldName);
-            result.addStatement(ass);
+        if (variable.isArrayList) {
+            if (getNameFromType(variable, builder, acceptableForReadArrayList)) {
+                builder.append("ArrayListExtra");
+            } else if (StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableSerializableElement.asType())) {
+                builder.append("Extra");
+            }
+        } else {
+            builder.append("Extra");
         }
 
-        result.addStatement("return holder");
-
-        return result.build();
+        return builder.toString();
     }
 
-    private MethodSpec createRestoreMethod() {
+    private String getExtraMethodName(VariableBinding variable) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("get");
 
-        String holderClassName = targetClassName.simpleName() + "_Holder";
-        MethodSpec.Builder result = MethodSpec.methodBuilder("restore")
-                .addModifiers(PUBLIC)
-                .addModifiers(STATIC)
-                .addParameter(targetClassName, "target")
-                .addParameter(TypeName.OBJECT, "data");
+        TypeElement acceptableSerializableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement(Serializable.class.getCanonicalName());
 
-        result.beginControlFlow(" if( data != null )");
-        result.addStatement(holderClassName + " holder = (" + holderClassName + ")data");
+        if (variable.isPrimitive) {
+            builder.append(CaseUtils.toTitleCase(variable.fieldType));
+            builder.append("Extra");
+        } else if (variable.isArray && variable.isPrimitiveSubType) {
+            builder.append(CaseUtils.toTitleCase(variable.subType.toString()));
+            builder.append("ArrayExtra");
 
-        for (VariableBinding variable : variables) {
+        } else if (variable.isArray) {
+            getNameFromType(variable, builder, acceptableForReadArray);
+            builder.append("ArrayExtra");
 
-            String asignement = String.format("target.%s = holder.%s", variable.fieldName,
-                    variable.fieldName);
-            result.addStatement(asignement, targetClassName);
+        } else if (variable.isArrayList) {
+            if (getNameFromType(variable, builder, acceptableForReadArrayList)) {
+                builder.append("ArrayListExtra");
+            } else if (StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableSerializableElement.asType())) {
+                builder.append("SerializableExtra");
+            }
+        } else {
+            getNameFromType(variable, builder, acceptableForRead);
+            builder.append("Extra");
         }
 
-        result.endControlFlow();
-        return result.build();
+        return builder.toString();
     }
 
-    private TypeSpec createHolderClass() {
+    private boolean getNameFromType(VariableBinding variable, StringBuilder builder, String[] acceptedValues) {
+        for (int elementOnWriteList = 0; elementOnWriteList < acceptedValues.length; elementOnWriteList++) {
+            String name = null;
+            if (variable.subType == null) {
+                name = variable.fieldTypeMinor.toString();
+            } else {
+                name = variable.subType.toString();
+            }
+            TypeElement acceptableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement(acceptedValues[elementOnWriteList]);
+            TypeElement variableTypeElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement(name);
 
-        TypeSpec.Builder result = TypeSpec.classBuilder(targetClassName.simpleName() + "_Holder")
-                .addModifiers(PUBLIC)
-                .addModifiers(STATIC);
-
-        for (VariableBinding variable : variables) {
-            result.addField(FieldSpec.builder(TypeName.get(variable.fieldTypeMinor), variable.fieldName).build());
+            if (StatePersisterAnnotationProcessor.typeUtils.isAssignable(variableTypeElement.asType(), acceptableElement.asType())) {
+                ClassName className = ClassName.bestGuess(acceptedValues[elementOnWriteList]);
+                builder.append(className.simpleName());
+                return true;
+            }
         }
-
-        return result.build();
+        return false;
     }
 }

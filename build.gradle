@@ -25,9 +25,9 @@ allprojects {
 //        maven {
 //            url 'https://github.com/TomMannson/maven-repository/raw/master/'
 //        }
-//        maven {
-//            url 'https://dl.bintray.com/tommannson/maven/'
-//        }
+        maven {
+            url 'https://dl.bintray.com/tommannson/maven/'
+        }
     }
 }
 
