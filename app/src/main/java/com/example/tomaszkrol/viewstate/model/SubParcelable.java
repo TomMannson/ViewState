@@ -1,4 +1,4 @@
-package com.example.tomaszkrol.viewstate;
+package com.example.tomaszkrol.viewstate.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

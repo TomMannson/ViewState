@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.tomaszkrol.viewstate.MainActivity"
+    tools:context="com.example.tomaszkrol.viewstate.ui.activity.MainActivity"
 >
 
     <android.support.design.widget.AppBarLayout
@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/asd"
-        android:name="com.example.tomaszkrol.viewstate.MainFragment"
+        android:name="com.example.tomaszkrol.viewstate.ui.fragment.MainFragment"
         android:layout_width="150dp"
         android:layout_height="150dp" />
 

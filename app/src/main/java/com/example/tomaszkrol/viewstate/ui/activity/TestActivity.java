@@ -1,8 +1,10 @@
-package com.example.tomaszkrol.viewstate;
+package com.example.tomaszkrol.viewstate.ui.activity;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 
+import com.example.tomaszkrol.viewstate.base.BaseActivity;
+import com.example.tomaszkrol.viewstate.model.Data;
+import com.example.tomaszkrol.viewstate.model.SubParcelable;
 import com.tommannson.viewstate.annotations.ActivityArg;
 import com.tommannson.viewstate.annotations.ViewData;
 

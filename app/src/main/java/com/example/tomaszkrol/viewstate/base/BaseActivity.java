@@ -1,4 +1,4 @@
-package com.example.tomaszkrol.viewstate;
+package com.example.tomaszkrol.viewstate.base;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

@@ -1,12 +1,12 @@
-package com.example.tomaszkrol.viewstate;
+package com.example.tomaszkrol.viewstate.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.tommannson.viewstate.annotations.ActivityArg;
+import com.example.tomaszkrol.viewstate.model.Data;
+import com.example.tomaszkrol.viewstate.model.SubParcelable;
 import com.tommannson.viewstate.annotations.FragmentArg;
-import com.tommannson.viewstate.annotations.ViewData;
 
 import java.util.ArrayList;
 

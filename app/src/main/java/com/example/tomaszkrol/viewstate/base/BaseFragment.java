@@ -1,4 +1,5 @@
-package com.example.tomaszkrol.viewstate;
+package com.example.tomaszkrol.viewstate.base;
+
 
 import android.support.v4.app.Fragment;
 

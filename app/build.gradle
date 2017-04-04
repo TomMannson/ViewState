@@ -36,7 +36,8 @@ dependencies {
     compile 'com.tommannson.viewstate:viewstatecore:0.2.4'
 
     //for development use
-//    apt project(':viewstatecompiler') //files('libs/viewstatecompiler.jar')//
+//    apt project(':viewstatecompiler')
+//    apt files('libs/viewstatecompiler.jar')//
 //    compile project(':viewstateannotations')
 //    compile project(':viewstatecore')
 }

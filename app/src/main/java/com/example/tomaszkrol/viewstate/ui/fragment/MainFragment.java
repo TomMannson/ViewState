@@ -1,4 +1,4 @@
-package com.example.tomaszkrol.viewstate;
+package com.example.tomaszkrol.viewstate.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.tomaszkrol.viewstate.base.BaseFragment;
 import com.tommannson.viewstate.annotations.ViewData;
 
 

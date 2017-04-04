@@ -1,4 +1,4 @@
-package com.example.tomaszkrol.viewstate;
+package com.example.tomaszkrol.viewstate.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.example.tomaszkrol.viewstate.R;
+import com.example.tomaszkrol.viewstate.base.BaseActivity;
+import com.example.tomaszkrol.viewstate.model.Data;
+import com.example.tomaszkrol.viewstate.model.SubParcelable;
+import com.example.tomaszkrol.viewstate.ui.fragment.TestArgsFragmentBuilder;
 import com.tommannson.viewstate.annotations.ViewData;
 
 import java.util.ArrayList;
@@ -43,8 +48,6 @@ public class MainActivity extends BaseActivity {
                         .build(MainActivity.this);
 
                 startActivity(intentForStart);
-
-
 
 
             }
