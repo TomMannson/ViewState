@@ -44,8 +44,21 @@ public class MainActivity extends BaseActivity {
 
                 startActivity(intentForStart);
 
+
+
+
             }
         });
+
+        ArrayList<Data> data = new ArrayList<>();
+        data.add(new Data());
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(new TestArgsFragmentBuilder()
+                        .serializableArrayList(data)
+                        .build(), "")
+                .commit();
     }
 
     @Override

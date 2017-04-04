@@ -20,7 +20,7 @@ public class ModelFactory {
 
     private static final String BINDING_CLASS_SUFFIX = "Binder";
     private static final String INTENT_BUILDER_CLASS_SUFFIX = "IntentBuilder";
-    private static final String FRAGMENT_BUILDER_CLASS_SUFFIX = "Binder";
+    private static final String FRAGMENT_BUILDER_CLASS_SUFFIX = "Builder";
 
     private Elements elementUtils;
 
@@ -67,6 +67,27 @@ public class ModelFactory {
                     AptUtils.getClassName(enclosingElement, packageName));
 
             renderer = new ActivityIntentBuilderRenderer(classFqcn, targetClassName);
+            targetClassMap.put(enclosingElement, renderer);
+        }
+        return renderer;
+    }
+
+    public FragmentBuilderRenderer getOrCreateFragmentRendererClass(Map<TypeElement, FragmentBuilderRenderer> targetClassMap,
+                                                                          TypeElement enclosingElement) {
+        FragmentBuilderRenderer renderer = targetClassMap.get(enclosingElement);
+        if (renderer == null) {
+            TypeName targetType = TypeName.get(enclosingElement.asType());
+            if (targetType instanceof ParameterizedTypeName) {
+                targetType = ((ParameterizedTypeName) targetType).rawType;
+            }
+
+            String packageName = AptUtils.getPackageName(elementUtils, enclosingElement);
+            ClassName classFqcn = ClassName.get(packageName,
+                    AptUtils.getClassName(enclosingElement, packageName) + FRAGMENT_BUILDER_CLASS_SUFFIX);
+            ClassName targetClassName = ClassName.get(packageName,
+                    AptUtils.getClassName(enclosingElement, packageName));
+
+            renderer = new FragmentBuilderRenderer(classFqcn, targetClassName);
             targetClassMap.put(enclosingElement, renderer);
         }
         return renderer;
