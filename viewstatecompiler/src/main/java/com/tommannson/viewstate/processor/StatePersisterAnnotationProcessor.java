@@ -2,7 +2,9 @@ package com.tommannson.viewstate.processor;
 
 import com.google.auto.service.AutoService;
 import com.tommannson.viewstate.annotations.ActivityArg;
+import com.tommannson.viewstate.annotations.ActivityArgModel;
 import com.tommannson.viewstate.annotations.FragmentArg;
+import com.tommannson.viewstate.annotations.FragmentArgModel;
 import com.tommannson.viewstate.annotations.ViewData;
 import com.tommannson.viewstate.processor.model.ActivityIntentBuilderRenderer;
 import com.tommannson.viewstate.processor.model.FragmentBuilderRenderer;
@@ -141,6 +143,36 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
 
             FragmentBuilderRenderer binding = factory.getOrCreateFragmentRendererClass(targetClassMap, enclosingElement);
+            VariableBinding varBind = exportVariableInfo(element);
+            binding.variables.add(varBind);
+        }
+
+        return targetClassMap;
+    }
+
+    private Map<TypeElement, FragmentBuilderRenderer> findAndParseFragmentModelTargets(RoundEnvironment env) {
+        Map<TypeElement, FragmentBuilderRenderer> targetClassMap = new LinkedHashMap<>();
+
+        for (Element element : env.getElementsAnnotatedWith(FragmentArgModel.class)) {
+
+            TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
+
+            FragmentBuilderRenderer binding = factory.getOrCreateFragmentRendererClass(targetClassMap, enclosingElement);
+            VariableBinding varBind = exportVariableInfo(element);
+            binding.variables.add(varBind);
+        }
+
+        return targetClassMap;
+    }
+
+    private Map<TypeElement, ActivityIntentBuilderRenderer> findAndParseActivityModelTargets(RoundEnvironment env) {
+        Map<TypeElement, ActivityIntentBuilderRenderer> targetClassMap = new LinkedHashMap<>();
+
+        for (Element element : env.getElementsAnnotatedWith(ActivityArgModel.class)) {
+
+            TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
+
+            ActivityIntentBuilderRenderer binding = factory.getOrCreateActivityRendererClass(targetClassMap, enclosingElement);
             VariableBinding varBind = exportVariableInfo(element);
             binding.variables.add(varBind);
         }

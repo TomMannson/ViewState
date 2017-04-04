@@ -63,6 +63,9 @@ public class FragmentBuilderRenderer {
     private ClassName targetClassName;
     public List<VariableBinding> variables = new ArrayList<>();
 
+    private ClassName dataHolder;
+    private boolean hasHolder;
+
     public FragmentBuilderRenderer(ClassName generetedClassName, ClassName targetClassName) {
         this.generetedClassName = generetedClassName;
         this.targetClassName = targetClassName;
@@ -129,7 +132,7 @@ public class FragmentBuilderRenderer {
 
     private void addGetDataFromIntentMethodsSection(TypeSpec.Builder result) {
 
-        MethodSpec.Builder method = MethodSpec.methodBuilder("getDataFromIntent")
+        MethodSpec.Builder method = MethodSpec.methodBuilder("getDataFromArgs")
                 .addModifiers(PUBLIC, STATIC)
                 .addParameter(targetClassName, "activity")
                 .addStatement("$T args = activity.getArguments()", ClassName.get("android.os", "Bundle"));
@@ -256,5 +259,10 @@ public class FragmentBuilderRenderer {
             }
         }
         return false;
+    }
+
+    public void setDataHolder(ClassName dataHolder) {
+        this.dataHolder = dataHolder;
+        hasHolder = true;
     }
 }

@@ -63,6 +63,9 @@ public class ActivityIntentBuilderRenderer {
     private ClassName targetClassName;
     public List<VariableBinding> variables = new ArrayList<>();
 
+    private ClassName dataHolder;
+    private boolean hasHolder;
+
     public ActivityIntentBuilderRenderer(ClassName generetedClassName, ClassName targetClassName) {
         this.generetedClassName = generetedClassName;
         this.targetClassName = targetClassName;
@@ -149,18 +152,6 @@ public class ActivityIntentBuilderRenderer {
             } else if (variable.isArray && StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableParcelableElement.asType())) {
 
                 TypeName subType = ClassName.get(variable.subType);
-
-//                method.beginControlFlow(" if( intent.getParcelableArrayExtra(\"" + variable.fieldName + "_KEY\") != null )");
-//
-//                method.addStatement("Parcelable[] array = intent.getParcelableArrayExtra(\"" + variable.fieldName + "_KEY)");
-//                method.addStatement(variable.fieldType + " destArray = new "+ variable.fieldType.substring(0, variable.fieldType.length() - 1 ) + "array.length]");
-//                method.beginControlFlow("for( int i = 0; i < array.length; i++ )");
-//
-//                method.addStatement("destArray[i] = ( "+ variable.subType + " ) array[i]");
-//
-//                method.endControlFlow();
-//                method.addStatement("activity." + variable.fieldName + " = destArray");
-//                method.endControlFlow();
 
                 method.beginControlFlow(" if( intent.getParcelableArrayExtra(\"$L_KEY\") != null )", fieldName);
 //
@@ -253,5 +244,10 @@ public class ActivityIntentBuilderRenderer {
             }
         }
         return false;
+    }
+
+    public void setDataHolder(ClassName dataHolder) {
+        this.dataHolder = dataHolder;
+        hasHolder = true;
     }
 }
