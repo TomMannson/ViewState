@@ -92,4 +92,30 @@ public class ModelFactory {
         }
         return renderer;
     }
+
+    public ActivityModelBuilderRenderer getOrCreateActivityModelRendererClass(Map<TypeElement, ActivityModelBuilderRenderer> targetClassMap,
+                                                                          TypeElement enclosingElement, ClassName[] classes) {
+        ActivityModelBuilderRenderer renderer = targetClassMap.get(enclosingElement);
+        if (renderer == null) {
+            TypeName targetType = TypeName.get(enclosingElement.asType());
+            if (targetType instanceof ParameterizedTypeName) {
+                targetType = ((ParameterizedTypeName) targetType).rawType;
+            }
+
+            String packageName = AptUtils.getPackageName(elementUtils, enclosingElement);
+            ClassName classFqcn = ClassName.get(packageName,
+                    AptUtils.getClassName(enclosingElement, packageName) + INTENT_BUILDER_CLASS_SUFFIX);
+            ClassName targetClassName = ClassName.get(packageName,
+                    AptUtils.getClassName(enclosingElement, packageName));
+
+//            ClassName[] activityClasses = new ClassName[classes.length];
+//            for (int i = 0; i < classes.length; i++){
+//                activityClasses[i] = ClassName.get(classes[i]);
+//            }
+
+            renderer = new ActivityModelBuilderRenderer(classFqcn, targetClassName, classes);
+            targetClassMap.put(enclosingElement, renderer);
+        }
+        return renderer;
+    }
 }

@@ -31,13 +31,13 @@ dependencies {
     compile 'javax.annotation:jsr250-api:1.0'
 
     compile 'com.squareup:javapoet:1.6.0'
-    apt 'com.tommannson.viewstate:viewstatecompiler:0.2.4'
-    compile 'com.tommannson.viewstate:viewstateannotations:0.2.4'
-    compile 'com.tommannson.viewstate:viewstatecore:0.2.4'
+//    apt 'com.tommannson.viewstate:viewstatecompiler:0.2.4'
+//    compile 'com.tommannson.viewstate:viewstateannotations:0.2.4'
+//    compile 'com.tommannson.viewstate:viewstatecore:0.2.4'
 
     //for development use
-//    apt project(':viewstatecompiler')
+    apt project(':viewstatecompiler')
 //    apt files('libs/viewstatecompiler.jar')//
-//    compile project(':viewstateannotations')
-//    compile project(':viewstatecore')
+    compile project(':viewstateannotations')
+    compile project(':viewstatecore')
 }

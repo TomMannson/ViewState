@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target(value= ElementType.TYPE)
-@interface FragmentArgModel {
+public @interface FragmentArgModel {
     public Class<?> target();
     public Class<?>[] targets() default {};
 }

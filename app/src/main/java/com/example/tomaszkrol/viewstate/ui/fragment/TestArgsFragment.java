@@ -77,7 +77,7 @@ public class TestArgsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TestArgsFragmentBuilder.getDataFromIntent(this);
+        TestArgsFragmentBuilder.getDataFromArgs(this);
 
     }
 }

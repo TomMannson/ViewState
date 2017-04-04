@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target(value= ElementType.TYPE)
-@interface ActivityArgModel {
+public @interface ActivityArgModel {
     public Class<?> target();
     public Class<?>[] targets() default {};
 }
