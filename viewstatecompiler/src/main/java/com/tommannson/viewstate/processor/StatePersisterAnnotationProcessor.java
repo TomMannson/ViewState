@@ -2,6 +2,7 @@ package com.tommannson.viewstate.processor;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeSpec;
 import com.tommannson.viewstate.annotations.ActivityArg;
 import com.tommannson.viewstate.annotations.ActivityArgModel;
 import com.tommannson.viewstate.annotations.FragmentArg;
@@ -10,6 +11,7 @@ import com.tommannson.viewstate.annotations.ViewData;
 import com.tommannson.viewstate.processor.model.ActivityIntentBuilderRenderer;
 import com.tommannson.viewstate.processor.model.ActivityModelBuilderRenderer;
 import com.tommannson.viewstate.processor.model.FragmentBuilderRenderer;
+import com.tommannson.viewstate.processor.model.FragmentModelBuilderRenderer;
 import com.tommannson.viewstate.processor.model.ModelFactory;
 import com.tommannson.viewstate.processor.model.StateBindingRenderer;
 import com.tommannson.viewstate.processor.model.VariableBinding;
@@ -17,6 +19,7 @@ import com.tommannson.viewstate.processor.utils.AptUtils;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +36,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -77,6 +81,7 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             Map<TypeElement, ActivityIntentBuilderRenderer> activities = findAndParseActivityTargets(roundEnv);
             Map<TypeElement, FragmentBuilderRenderer> fragments = findAndParseFragmentTargets(roundEnv);
             Map<TypeElement, ActivityModelBuilderRenderer> activityModels = findAndParseActivityModelTargets(roundEnv);
+            Map<TypeElement, FragmentModelBuilderRenderer> fragmentModels = findAndParseFragmentModelTargets(roundEnv);
 
             for (Map.Entry<TypeElement, StateBindingRenderer> entry : elements.entrySet()) {
 
@@ -98,6 +103,12 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             for (Map.Entry<TypeElement, ActivityModelBuilderRenderer> entry : activityModels.entrySet()) {
 
                 ActivityModelBuilderRenderer bindingClass = entry.getValue();
+                bindingClass.generateJava().writeTo(filer);
+            }
+
+            for (Map.Entry<TypeElement, FragmentModelBuilderRenderer> entry : fragmentModels.entrySet()) {
+
+                FragmentModelBuilderRenderer bindingClass = entry.getValue();
                 bindingClass.generateJava().writeTo(filer);
             }
         } catch (Exception e) {
@@ -162,18 +173,40 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
         return targetClassMap;
     }
 
-    private Map<TypeElement, FragmentBuilderRenderer> findAndParseFragmentModelTargets(RoundEnvironment env) {
-        Map<TypeElement, FragmentBuilderRenderer> targetClassMap = new LinkedHashMap<>();
+    private Map<TypeElement, FragmentModelBuilderRenderer> findAndParseFragmentModelTargets(RoundEnvironment env) {
+        Map<TypeElement, FragmentModelBuilderRenderer> targetClassMap = new LinkedHashMap<>();
 
         for (Element element : env.getElementsAnnotatedWith(FragmentArgModel.class)) {
 
-            TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
+            FragmentArgModel annotation = element.getAnnotation(FragmentArgModel.class);
+            ClassName[] activityClasses = null;
 
-            FragmentBuilderRenderer binding = factory.getOrCreateFragmentRendererClass(targetClassMap, enclosingElement);
-            VariableBinding varBind = exportVariableInfo(element);
-            binding.variables.add(varBind);
+
+            ClassName mirror = getTarget((TypeElement) element, FragmentArgModel.class);
+//            if(annotation.targets().length > 0){
+//                activityClasses = new Class<?>[annotation.targets().length];
+//
+//                for (int i = 0; i < annotation.targets().length; i++) {
+//                    activityClasses[i] = annotation.targets()[i];
+//                }
+//            }
+//            else{
+            activityClasses = new ClassName[]{mirror};
+//            }
+
+            TypeElement enclosingElement = (TypeElement) element;
+
+            FragmentModelBuilderRenderer binding = factory.getOrCreateFragmentModelRendererClass(targetClassMap, enclosingElement, activityClasses);
+
+            List<? extends Element> listOfVariables = enclosingElement.getEnclosedElements();
+            listOfVariables = ElementFilter.fieldsIn(listOfVariables);
+
+            for (Element variableToProcess : listOfVariables) {
+
+                VariableBinding varBind = exportVariableInfo(variableToProcess);
+                binding.variables.add(varBind);
+            }
         }
-
         return targetClassMap;
     }
 
@@ -201,8 +234,15 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             TypeElement enclosingElement = (TypeElement) element;
 
             ActivityModelBuilderRenderer binding = factory.getOrCreateActivityModelRendererClass(targetClassMap, enclosingElement, activityClasses);
-            VariableBinding varBind = exportVariableInfo(element);
-            binding.variables.add(varBind);
+
+            List<? extends Element> listOfVariables = enclosingElement.getEnclosedElements();
+            listOfVariables = ElementFilter.fieldsIn(listOfVariables);
+
+            for (Element variableToProcess : listOfVariables) {
+
+                VariableBinding varBind = exportVariableInfo(variableToProcess);
+                binding.variables.add(varBind);
+            }
         }
 
         return targetClassMap;
@@ -264,6 +304,19 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
 
     public ClassName getTarget(TypeElement foo) {
         AnnotationMirror am = getAnnotationMirror(foo, ActivityArgModel.class);
+        if (am == null) {
+            return null;
+        }
+        AnnotationValue av = getAnnotationValue(am, "target");
+
+        if (av == null) {
+            return null;
+        } else {
+            return ClassName.bestGuess(av.getValue().toString());
+        }
+    }
+    public ClassName getTarget(TypeElement foo, Class<?> annotationClass) {
+        AnnotationMirror am = getAnnotationMirror(foo, annotationClass);
         if (am == null) {
             return null;
         }

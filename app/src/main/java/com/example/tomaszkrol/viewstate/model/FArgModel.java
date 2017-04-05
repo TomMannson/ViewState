@@ -1,15 +1,16 @@
 package com.example.tomaszkrol.viewstate.model;
 
 import com.example.tomaszkrol.viewstate.ui.activity.TestActivity;
-import com.tommannson.viewstate.annotations.ActivityArg;
+import com.example.tomaszkrol.viewstate.ui.fragment.TestArgsFragment;
 import com.tommannson.viewstate.annotations.ActivityArgModel;
+import com.tommannson.viewstate.annotations.FragmentArgModel;
 
 /**
  * Created by tomasz.krol on 2017-04-04.
  */
 
-@ActivityArgModel(target = TestActivity.class)
-public class AArgModel {
+@FragmentArgModel(target = TestArgsFragment.class)
+public class FArgModel {
 
     int data;
 }

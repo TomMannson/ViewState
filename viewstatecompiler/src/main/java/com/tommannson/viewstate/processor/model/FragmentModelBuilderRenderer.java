@@ -25,7 +25,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * Created by tomasz.krol on 2016-05-10.
  */
-public class ActivityModelBuilderRenderer {
+public class FragmentModelBuilderRenderer {
 
     private static final String GENERATED_COMMENTS = "beta version ";
 
@@ -55,7 +55,7 @@ public class ActivityModelBuilderRenderer {
 
     private static final AnnotationSpec GENERATED =
             AnnotationSpec.builder(Generated.class)
-                    .addMember("value", "$S", ActivityModelBuilderRenderer.class.getName())
+                    .addMember("value", "$S", FragmentModelBuilderRenderer.class.getName())
                     .addMember("comments", "$S", GENERATED_COMMENTS)
                     .build();
 
@@ -67,7 +67,7 @@ public class ActivityModelBuilderRenderer {
     private ClassName dataHolder;
     private boolean hasHolder;
 
-    public ActivityModelBuilderRenderer(ClassName generetedClassName, ClassName targetClassName, ClassName[] activityClassName) {
+    public FragmentModelBuilderRenderer(ClassName generetedClassName, ClassName targetClassName, ClassName[] activityClassName) {
         this.generetedClassName = generetedClassName;
         this.targetClassName = targetClassName;
         this.activityClassName = activityClassName;
@@ -115,19 +115,30 @@ public class ActivityModelBuilderRenderer {
 
         for(int activityTargetIndex = 0; activityTargetIndex < activityClassName.length; activityTargetIndex++ ) {
 
-            MethodSpec.Builder method = MethodSpec.methodBuilder("buildFor"+activityClassName[activityTargetIndex].simpleName())
+            ClassName fragmentTHost = activityClassName[activityTargetIndex];
+            ClassName bundle = ClassName.get("android.os", "Bundle");
+
+//            MethodSpec.Builder method = MethodSpec.methodBuilder("buildFor"+fragmentTHost.simpleName())
+//                    .addModifiers(PUBLIC)
+//                    .returns(targetClassName)
+//                    .addStatement("$T fragment = new $T()", targetClassName, targetClassName)
+//                    .addStatement("$T args = new $T()", bundle, bundle);
+
+
+            MethodSpec.Builder method = MethodSpec.methodBuilder("buildFor"+fragmentTHost.simpleName())
                     .addModifiers(PUBLIC)
-                    .addParameter(ClassName.get("android.content", "Context"), "ctx")
-                    .returns(ClassName.get("android.content", "Intent"))
-                    .addStatement("Intent starter = new Intent(ctx, $T.class)", activityClassName[activityTargetIndex]);
+//                    .addParameter(ClassName.get("android.content", "Context"), "ctx")
+                    .returns(fragmentTHost)
+                    .addStatement("$T starter = new $T()", fragmentTHost, fragmentTHost)
+                    .addStatement("$T args = new $T()", bundle, bundle);
 
             for (VariableBinding variable : variables) {
 
-                method.addStatement("starter." + putExtraMethodName(variable)
+                method.addStatement("args." + putExtraMethodName(variable)
                         + "(\"" + variable.fieldName + "_KEY\", " + variable.fieldName + ")");
             }
 
-            method.addStatement("starter.putExtra"
+            method.addStatement("args.putString"
                     + "(\"Activity_Holder_Name_KEY\", \"" + targetClassName.simpleName() + "\")");
 
             method.addStatement("return starter");
@@ -138,13 +149,15 @@ public class ActivityModelBuilderRenderer {
 
     private void addGetDataFromIntentMethodsSection(TypeSpec.Builder result) {
 
+        ClassName bundle = ClassName.get("android.os", "Bundle");
+
         for(int activityTargetIndex = 0; activityTargetIndex < activityClassName.length; activityTargetIndex++ ) {
 
             MethodSpec.Builder method = MethodSpec.methodBuilder("getDataFromIntent")
                     .addModifiers(PUBLIC, STATIC)
                     .returns(targetClassName)
                     .addParameter(activityClassName[activityTargetIndex], "activity")
-                    .addStatement("Intent intent = activity.getIntent()")
+                    .addStatement("$T args = activity.getArguments()", bundle)
                     .addStatement("$T data = new $T()", targetClassName, targetClassName);
 
             for (VariableBinding variable : variables) {
@@ -156,18 +169,17 @@ public class ActivityModelBuilderRenderer {
 
                 if (variable.isPrimitive) {
                     String defaultValue = DefaultValueUtils.getDefaultValue(ClassName.get(variable.fieldTypeMinor), null);
-                    method.addStatement("data." + variable.fieldName + " = (" + variable.fieldType + ") intent." + getExtraMethodName(variable)
+                    method.addStatement("data." + variable.fieldName + " = (" + variable.fieldType + ") args." + getExtraMethodName(variable)
                             + "(\"" + variable.fieldName + "_KEY\", " + defaultValue + ")");
                 } else if (variable.isArrayList && StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableParcelableElement.asType())) {
-                    method.addStatement("data." + variable.fieldName + " = intent." + getExtraMethodName(variable)
+                    method.addStatement("data." + variable.fieldName + " = args." + getExtraMethodName(variable)
                             + "(\"" + variable.fieldName + "_KEY\")");
                 } else if (variable.isArray && StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableParcelableElement.asType())) {
 
                     TypeName subType = ClassName.get(variable.subType);
 
-                    method.beginControlFlow(" if( intent.getParcelableArrayExtra(\"$L_KEY\") != null )", fieldName);
-//
-                    method.addStatement("$T[] array = intent.getParcelableArrayExtra(\"$L_KEY\")", parcelableType, fieldName);
+                    method.beginControlFlow(" if( args.getParcelableArray(\"$L_KEY\") != null )", fieldName);
+                    method.addStatement("$T[] array = args.getParcelableArray(\"$L_KEY\")", parcelableType, fieldName);
                     method.addStatement("$1T[] destArray = new $1T[array.length]", subType);
                     method.beginControlFlow("for( int i = 0; i < array.length; i++ )");
 
@@ -178,7 +190,7 @@ public class ActivityModelBuilderRenderer {
                     method.endControlFlow();
 
                 } else {
-                    method.addStatement("data." + variable.fieldName + " = (" + variable.fieldType + ") intent." + getExtraMethodName(variable)
+                    method.addStatement("data." + variable.fieldName + " = (" + variable.fieldType + ") args." + getExtraMethodName(variable)
                             + "(\"" + variable.fieldName + "_KEY\")");
                 }
             }
@@ -195,14 +207,29 @@ public class ActivityModelBuilderRenderer {
 
         TypeElement acceptableSerializableElement = StatePersisterAnnotationProcessor.elementUtils.getTypeElement(Serializable.class.getCanonicalName());
 
-        if (variable.isArrayList) {
+
+        if (variable.isPrimitive) {
+            builder.append(CaseUtils.toTitleCase(variable.fieldType));
+        }
+        else if (variable.isArray && variable.isPrimitiveSubType) {
+            builder.append(CaseUtils.toTitleCase(variable.subType.toString()));
+            builder.append("Array");
+        }
+        else if (variable.isArray) {
+            getNameFromType(variable, builder, acceptableForReadArray);
+            builder.append("Array");
+        }
+        else if (variable.isArrayList) {
             if (getNameFromType(variable, builder, acceptableForReadArrayList)) {
-                builder.append("ArrayListExtra");
+                builder.append("ArrayList");
             } else if (StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableSerializableElement.asType())) {
-                builder.append("Extra");
+                builder.append("Serializable");
+//                builder.append("Extra");
             }
         } else {
-            builder.append("Extra");
+            getNameFromType(variable, builder, acceptableForRead);
+//            builder.append(CaseUtils.toTitleCase(variable.fieldType));
+//            builder.append("Extra");
         }
 
         return builder.toString();
@@ -217,24 +244,23 @@ public class ActivityModelBuilderRenderer {
 
         if (variable.isPrimitive) {
             builder.append(CaseUtils.toTitleCase(variable.fieldType));
-            builder.append("Extra");
+//            builder.append("Extra");
         } else if (variable.isArray && variable.isPrimitiveSubType) {
             builder.append(CaseUtils.toTitleCase(variable.subType.toString()));
-            builder.append("ArrayExtra");
+            builder.append("Array");
 
         } else if (variable.isArray) {
             getNameFromType(variable, builder, acceptableForReadArray);
-            builder.append("ArrayExtra");
+            builder.append("Array");
 
         } else if (variable.isArrayList) {
             if (getNameFromType(variable, builder, acceptableForReadArrayList)) {
-                builder.append("ArrayListExtra");
+                builder.append("ArrayList");
             } else if (StatePersisterAnnotationProcessor.typeUtils.isAssignable(variable.subType, acceptableSerializableElement.asType())) {
-                builder.append("SerializableExtra");
+                builder.append("Serializable");
             }
         } else {
             getNameFromType(variable, builder, acceptableForRead);
-            builder.append("Extra");
         }
 
         return builder.toString();

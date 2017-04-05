@@ -108,12 +108,28 @@ public class ModelFactory {
             ClassName targetClassName = ClassName.get(packageName,
                     AptUtils.getClassName(enclosingElement, packageName));
 
-//            ClassName[] activityClasses = new ClassName[classes.length];
-//            for (int i = 0; i < classes.length; i++){
-//                activityClasses[i] = ClassName.get(classes[i]);
-//            }
-
             renderer = new ActivityModelBuilderRenderer(classFqcn, targetClassName, classes);
+            targetClassMap.put(enclosingElement, renderer);
+        }
+        return renderer;
+    }
+
+    public FragmentModelBuilderRenderer getOrCreateFragmentModelRendererClass(Map<TypeElement, FragmentModelBuilderRenderer> targetClassMap,
+                                                                              TypeElement enclosingElement, ClassName[] classes) {
+        FragmentModelBuilderRenderer renderer = targetClassMap.get(enclosingElement);
+        if (renderer == null) {
+            TypeName targetType = TypeName.get(enclosingElement.asType());
+            if (targetType instanceof ParameterizedTypeName) {
+                targetType = ((ParameterizedTypeName) targetType).rawType;
+            }
+
+            String packageName = AptUtils.getPackageName(elementUtils, enclosingElement);
+            ClassName classFqcn = ClassName.get(packageName,
+                    AptUtils.getClassName(enclosingElement, packageName) + FRAGMENT_BUILDER_CLASS_SUFFIX);
+            ClassName targetClassName = ClassName.get(packageName,
+                    AptUtils.getClassName(enclosingElement, packageName));
+
+            renderer = new FragmentModelBuilderRenderer(classFqcn, targetClassName, classes);
             targetClassMap.put(enclosingElement, renderer);
         }
         return renderer;
