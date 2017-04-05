@@ -11,6 +11,7 @@ import com.example.tomaszkrol.viewstate.R;
 import com.example.tomaszkrol.viewstate.base.BaseActivity;
 import com.example.tomaszkrol.viewstate.model.Data;
 import com.example.tomaszkrol.viewstate.model.SubParcelable;
+import com.example.tomaszkrol.viewstate.model.UniversalArgModelIntentBuilder;
 import com.example.tomaszkrol.viewstate.ui.fragment.TestArgsFragmentBuilder;
 import com.tommannson.viewstate.annotations.ViewData;
 
@@ -30,13 +31,22 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//
+//
+//
+//
+//            }
+//        });
 
+        findViewById(R.id.activityArg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 ArrayList<SubParcelable> list = new ArrayList<>();
                 list.add(new SubParcelable());
 
@@ -48,8 +58,17 @@ public class MainActivity extends BaseActivity {
                         .build(MainActivity.this);
 
                 startActivity(intentForStart);
+            }
+        });
 
+        findViewById(R.id.activityArgModel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentForStart = new UniversalArgModelIntentBuilder()
+                        .data("Test")
+                        .buildForUniverstalActivity(MainActivity.this);
 
+                startActivity(intentForStart);
             }
         });
 

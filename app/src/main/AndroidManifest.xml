@@ -22,6 +22,8 @@
         </activity>
         
         <activity android:name=".ui.activity.TestActivity" />
+
+        <activity android:name=".ui.activity.UniverstalActivity" />
     </application>
 
 </manifest>
