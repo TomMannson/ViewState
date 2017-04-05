@@ -29,11 +29,6 @@ public class StateBindingRenderer {
                     .addMember("comments", "$S", GENERATED_COMMENTS)
                     .build();
 
-
-//    private static final ClassName CONTEXT = ClassName.get("android.content", "Context");
-//    private static final ClassName PERSIST_FRAGMENT = ClassName.get("pl.tomaszkrol.viewstate", "PersisterFragment");
-//    private static final ClassName FRAGMENT_ACTIVITY = ClassName.get("android.support.v4.app", "FragmentActivity");
-
     public ClassName generetedClassName;
     public ClassName targetClassName;
     public List<VariableBinding> variables = new ArrayList<>();

@@ -63,9 +63,6 @@ public class ActivityIntentBuilderRenderer {
     private ClassName targetClassName;
     public List<VariableBinding> variables = new ArrayList<>();
 
-    private ClassName dataHolder;
-    private boolean hasHolder;
-
     public ActivityIntentBuilderRenderer(ClassName generetedClassName, ClassName targetClassName) {
         this.generetedClassName = generetedClassName;
         this.targetClassName = targetClassName;
@@ -244,10 +241,5 @@ public class ActivityIntentBuilderRenderer {
             }
         }
         return false;
-    }
-
-    public void setDataHolder(ClassName dataHolder) {
-        this.dataHolder = dataHolder;
-        hasHolder = true;
     }
 }
