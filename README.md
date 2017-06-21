@@ -90,10 +90,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Persista
 
 On another step you should only  extents  BaseActivity instad of AppCompatActivity
 
-### Example for ViewData
-
-Annotation Processing is used to Generate `MainActivityBinder` class which save and restore data which should survive Configuration change
-
 ```java
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
