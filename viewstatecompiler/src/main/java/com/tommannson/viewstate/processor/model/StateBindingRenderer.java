@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -29,6 +30,10 @@ public class StateBindingRenderer {
                     .addMember("comments", "$S", GENERATED_COMMENTS)
                     .build();
 
+    private static final AnnotationSpec OVERRIDE =
+            AnnotationSpec.builder(Override.class)
+                    .build();
+
     public ClassName generetedClassName;
     public ClassName targetClassName;
     public List<VariableBinding> variables = new ArrayList<>();
@@ -39,7 +44,13 @@ public class StateBindingRenderer {
     }
 
     public JavaFile generateJava() {
+//        TypeSpec.Builder interfaceClass = TypeSpec.interfaceBuilder(ClassName.bestGuess("com.tommannson.viewstate.Binder"))
+//        ParameterizedTypeName.bestGuess("com.tommannson.viewstate.Binder<"++">")
+        ClassName binderClassName = ClassName.bestGuess("com.tommannson.viewstate.Binder");
+        TypeName genericClassName = ParameterizedTypeName.get(binderClassName, targetClassName);
+
         TypeSpec.Builder result = TypeSpec.classBuilder(generetedClassName)
+                .addSuperinterface(genericClassName)
                 .addAnnotation(GENERATED)
                 .addModifiers(PUBLIC);
 
@@ -58,7 +69,7 @@ public class StateBindingRenderer {
 
         MethodSpec.Builder result = MethodSpec.methodBuilder("persist")
                 .addModifiers(PUBLIC)
-                .addModifiers(STATIC)
+                .addAnnotation(OVERRIDE)
                 .addParameter(targetClassName, "target")
                 .returns(TypeName.OBJECT)
                 .addStatement(holderClassName + " holder = new " + holderClassName +"()");
@@ -79,7 +90,7 @@ public class StateBindingRenderer {
         String holderClassName = targetClassName.simpleName() + "_Holder";
         MethodSpec.Builder result = MethodSpec.methodBuilder("restore")
                 .addModifiers(PUBLIC)
-                .addModifiers(STATIC)
+                .addAnnotation(OVERRIDE)
                 .addParameter(targetClassName, "target")
                 .addParameter(TypeName.OBJECT, "data");
 

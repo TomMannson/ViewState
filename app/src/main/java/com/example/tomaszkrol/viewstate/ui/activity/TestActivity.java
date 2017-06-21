@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.example.tomaszkrol.viewstate.base.BaseActivity;
 import com.example.tomaszkrol.viewstate.model.Data;
 import com.example.tomaszkrol.viewstate.model.SubParcelable;
+import com.tommannson.viewstate.ViewBinder;
 import com.tommannson.viewstate.annotations.ActivityArg;
 import com.tommannson.viewstate.annotations.ViewData;
 
@@ -89,16 +90,5 @@ public class TestActivity extends BaseActivity {
         TestActivityIntentBuilder.getDataFromIntent(this);
         this.toString();
 
-    }
-
-    @Override
-    public Object saveCustomState() {
-//        return null;
-        return TestActivityBinder.persist(this);
-    }
-
-    @Override
-    public void loadCustomState(Object retainedState) {
-        TestActivityBinder.restore(this, retainedState);
     }
 }

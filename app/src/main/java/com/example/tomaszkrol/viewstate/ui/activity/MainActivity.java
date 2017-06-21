@@ -13,6 +13,7 @@ import com.example.tomaszkrol.viewstate.model.Data;
 import com.example.tomaszkrol.viewstate.model.SubParcelable;
 import com.example.tomaszkrol.viewstate.model.UniversalArgModelIntentBuilder;
 import com.example.tomaszkrol.viewstate.ui.fragment.TestArgsFragmentBuilder;
+import com.tommannson.viewstate.ViewBinder;
 import com.tommannson.viewstate.annotations.ViewData;
 
 import java.util.ArrayList;
@@ -86,16 +87,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public Object saveCustomState() {
-        return MainActivityBinder.persist(this);
-    }
-
-    @Override
-    public void loadCustomState(Object retainedState) {
-        MainActivityBinder.restore(this, retainedState);
     }
 
 }

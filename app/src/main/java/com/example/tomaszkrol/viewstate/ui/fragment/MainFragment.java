@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.tomaszkrol.viewstate.base.BaseFragment;
+import com.tommannson.viewstate.ViewBinder;
 import com.tommannson.viewstate.annotations.ViewData;
 
 
@@ -22,7 +23,6 @@ public class MainFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        savedInstanceState.put
     }
 
     @Nullable
@@ -30,15 +30,4 @@ public class MainFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(android.R.layout.simple_list_item_1, container, false);
     }
-
-    @Override
-    public Object saveCustomState() {
-        return MainFragmentBinder.persist(this);
-    }
-
-    @Override
-    public void loadCustomState(Object retainedState) {
-        MainFragmentBinder.restore(this, retainedState);
-    }
-
 }

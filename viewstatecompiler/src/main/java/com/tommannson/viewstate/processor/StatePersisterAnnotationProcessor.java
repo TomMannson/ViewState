@@ -10,6 +10,7 @@ import com.tommannson.viewstate.annotations.FragmentArgModel;
 import com.tommannson.viewstate.annotations.ViewData;
 import com.tommannson.viewstate.processor.model.ActivityIntentBuilderRenderer;
 import com.tommannson.viewstate.processor.model.ActivityModelBuilderRenderer;
+import com.tommannson.viewstate.processor.model.BinderRenderer;
 import com.tommannson.viewstate.processor.model.FragmentBuilderRenderer;
 import com.tommannson.viewstate.processor.model.FragmentModelBuilderRenderer;
 import com.tommannson.viewstate.processor.model.ModelFactory;
@@ -82,12 +83,14 @@ public class StatePersisterAnnotationProcessor extends AbstractProcessor {
             Map<TypeElement, FragmentBuilderRenderer> fragments = findAndParseFragmentTargets(roundEnv);
             Map<TypeElement, ActivityModelBuilderRenderer> activityModels = findAndParseActivityModelTargets(roundEnv);
             Map<TypeElement, FragmentModelBuilderRenderer> fragmentModels = findAndParseFragmentModelTargets(roundEnv);
+            BinderRenderer binderRenderer = new BinderRenderer(elements.entrySet());
 
             for (Map.Entry<TypeElement, StateBindingRenderer> entry : elements.entrySet()) {
 
                 StateBindingRenderer bindingClass = entry.getValue();
                 bindingClass.generateJava().writeTo(filer);
             }
+            binderRenderer.generateJava().writeTo(filer);
 
             for (Map.Entry<TypeElement, ActivityIntentBuilderRenderer> entry : activities.entrySet()) {
                 ActivityIntentBuilderRenderer bindingClass = entry.getValue();

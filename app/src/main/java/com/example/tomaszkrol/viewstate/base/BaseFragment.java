@@ -4,6 +4,7 @@ package com.example.tomaszkrol.viewstate.base;
 import android.support.v4.app.Fragment;
 
 import com.tommannson.viewstate.Persistable;
+import com.tommannson.viewstate.ViewBinder;
 
 
 /**
@@ -11,4 +12,15 @@ import com.tommannson.viewstate.Persistable;
  */
 
 public abstract class BaseFragment extends Fragment implements Persistable {
+
+    @Override
+    public Object saveCustomState() {
+        return ViewBinder.persist(this);
+    }
+
+    @Override
+    public void loadCustomState(Object retainedState) {
+        ViewBinder.restore(this, retainedState);
+    }
+
 }
