@@ -7,6 +7,8 @@ Libray to generate Helpers Class with Annotation processing
 
 ### Example for ViewData
 
+#### Simple example
+
 Annotation Processing is used to Generate `MainActivityBinder` class which save and restore data which should survive Configuration change
 
 ```java
@@ -16,7 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tommannson.viewstate.ActivityPersistLoader;
 import com.tommannson.viewstate.Persistable;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements Persistable {
 
     @ViewData
     Integer data;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-### Example for ViewData with  reduction boilerplate code
+#### Reduction boilerplate code
 
 In version 0.5 we can integrate librare with less effort.. In annotation processor ViewBinder is also generated simplify whole process
 
@@ -114,7 +116,55 @@ public class MainActivity extends BaseActivity {
 }
 ```
 
-###
+#### Reduction boilerplate code for fragment
+
+Library works as well for fragments we should declarate Base class for Fragment to reduct code duplication
+
+```java
+
+import android.support.v4.app.Fragment;
+
+import com.tommannson.viewstate.Persistable;
+import com.tommannson.viewstate.ViewBinder;
+
+public abstract class BaseFragment extends Fragment implements Persistable {
+
+    @Override
+    public Object saveCustomState() {
+        return ViewBinder.persist(this);
+    }
+
+    @Override
+    public void loadCustomState(Object retainedState) {
+        ViewBinder.restore(this, retainedState);
+    }
+}
+```
+
+In another step you should only  extents  from you BaseFragment class
+
+```java
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.example.tomaszkrol.viewstate.base.BaseFragment;
+import com.tommannson.viewstate.annotations.ViewData;
+
+public class MainFragment extends BaseFragment {
+
+    @ViewData
+    String asd;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(android.R.layout.simple_list_item_1, container, false);
+    }
+}
+```
 
 ### Example for ActivityArg
 
