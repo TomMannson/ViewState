@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by tomasz.krol on 2017-04-04.
  */
 
-public class TestArgsFragment extends Fragment {
+public class FragmentBuilderFragment extends Fragment {
 
     @FragmentArg
     int intData;
@@ -77,7 +77,7 @@ public class TestArgsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TestArgsFragmentBuilder.getDataFromArgs(this);
+        FragmentBuilderFragmentBuilder.getDataFromArgs(this);
 
     }
 }

@@ -5,9 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.tomaszkrol.viewstate.base.BaseFragment;
-import com.tommannson.viewstate.ViewBinder;
 import com.tommannson.viewstate.annotations.ViewData;
 
 
@@ -15,19 +15,24 @@ import com.tommannson.viewstate.annotations.ViewData;
  * Created by tomasz.krol on 2016-12-01.
  */
 
-public class MainFragment extends BaseFragment {
+public class ViewDataFragment extends BaseFragment {
 
     @ViewData
-    String asd;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    String contentToPersist;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(android.R.layout.simple_list_item_1, container, false);
+
+
+        TextView tv = (TextView) inflater.inflate(android.R.layout.simple_list_item_1, container, false);
+        if (contentToPersist == null) {
+            contentToPersist = "Static";
+        } else {
+            contentToPersist = contentToPersist + " recreated";
+        }
+
+        tv.setText(contentToPersist);
+        return tv;
     }
 }

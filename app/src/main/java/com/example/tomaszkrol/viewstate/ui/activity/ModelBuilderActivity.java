@@ -5,14 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.tomaszkrol.viewstate.R;
-import com.example.tomaszkrol.viewstate.model.UniversalArgModelBuilder;
-import com.example.tomaszkrol.viewstate.ui.fragment.UniversalFragment;
+import com.example.tomaszkrol.viewstate.ui.fragment.ModelBuilderFragment;
 
 /**
  * Created by tomasz.krol on 2017-04-05.
  */
 
-public class UniverstalActivity extends AppCompatActivity {
+public class ModelBuilderActivity extends AppCompatActivity {
 
 
     @Override
@@ -20,7 +19,7 @@ public class UniverstalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_universal);
 
-        UniversalFragment fragment = new UniversalFragment();
+        ModelBuilderFragment fragment = new ModelBuilderFragment();
         fragment.setArguments(getIntent().getExtras());
 
         getSupportFragmentManager().beginTransaction()

@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tommannson.viewstate.ActivityPersistLoader;
 import com.tommannson.viewstate.Persistable;
-import com.tommannson.viewstate.ViewBinder;
+import com.tommannson.viewstate.ViewStateBinder;
 
 
 /**
@@ -27,11 +27,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Persista
 
     @Override
     public Object saveCustomState() {
-        return ViewBinder.persist(this);
+        return ViewStateBinder.persist(this);
     }
 
     @Override
     public void loadCustomState(Object retainedState) {
-        ViewBinder.restore(this, retainedState);
+        ViewStateBinder.restore(this, retainedState);
     }
 }

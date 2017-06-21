@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.example.tomaszkrol.viewstate.base.BaseActivity;
 import com.example.tomaszkrol.viewstate.model.Data;
 import com.example.tomaszkrol.viewstate.model.SubParcelable;
-import com.tommannson.viewstate.ViewBinder;
 import com.tommannson.viewstate.annotations.ActivityArg;
 import com.tommannson.viewstate.annotations.ViewData;
 
@@ -15,7 +14,7 @@ import java.util.ArrayList;
  * Created by tomasz.krol on 2016-12-14.
  */
 
-public class TestActivity extends BaseActivity {
+public class ActivityBuilderActivity extends BaseActivity {
 
     @ActivityArg
     int intData;
@@ -87,7 +86,7 @@ public class TestActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TestActivityIntentBuilder.getDataFromIntent(this);
+        ActivityBuilderActivityIntentBuilder.getDataFromIntent(this);
         this.toString();
 
     }

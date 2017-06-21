@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.tomaszkrol.viewstate.ui.activity.MainActivity"
+    tools:context="com.example.tomaszkrol.viewstate.ui.activity.ViewDataActivity"
 >
 
     <android.support.design.widget.AppBarLayout
@@ -25,37 +25,50 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
+    <LinearLayout
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+    >
 
-    <fragment
-        android:id="@+id/asd"
-        android:name="com.example.tomaszkrol.viewstate.ui.fragment.MainFragment"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#f00"
+        >
+            <fragment
+                android:id="@+id/asd"
+                android:name="com.example.tomaszkrol.viewstate.ui.fragment.ViewDataFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@android:layout/simple_list_item_1"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email"
-    />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/dynamic_fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#00f"
+            android:layout_weight="1"
+        />
+
+    </LinearLayout>
+
+
+
 
     <Button
         android:id="@+id/activityArg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Activity Args"
+        android:text="Recreate without configuration"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|start"
+        android:onClick="recreateActivity"
     />
 
-    <Button
-        android:id="@+id/activityArgModel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="Args Model"
-    />
 
 </android.support.design.widget.CoordinatorLayout>

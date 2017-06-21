@@ -15,7 +15,7 @@ import com.example.tomaszkrol.viewstate.model.UniversalArgModelBuilder;
  * Created by tomasz.krol on 2017-04-05.
  */
 
-public class UniversalFragment extends Fragment {
+public class ModelBuilderFragment extends Fragment {
 
     UniversalArgModel model;
 

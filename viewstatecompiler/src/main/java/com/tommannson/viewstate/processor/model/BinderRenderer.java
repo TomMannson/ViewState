@@ -2,7 +2,6 @@ package com.tommannson.viewstate.processor.model;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -43,13 +42,10 @@ public class BinderRenderer {
 
     public BinderRenderer(Set<Map.Entry<TypeElement, StateBindingRenderer>> setToGenerateMap) {
         this.setToGenerateMap = setToGenerateMap;
-        generetedClassName = ClassName.bestGuess("com.tommannson.viewstate.ViewBinder");
+        generetedClassName = ClassName.bestGuess("com.tommannson.viewstate.ViewStateBinder");
     }
 
     public JavaFile generateJava() {
-
-//
-//        TypeName genericClassName = ParameterizedTypeName.get(binderClassName, targetClassName);
 
         TypeSpec.Builder result = TypeSpec.classBuilder(generetedClassName)
                 .addAnnotation(GENERATED)
@@ -80,15 +76,15 @@ public class BinderRenderer {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("init")
                 .addModifiers(STATIC)
-                .addStatement("if("+NAME_OF_MAP_FIELD+" == null){");
+                .beginControlFlow("if(" + NAME_OF_MAP_FIELD + " == null)");
 
         builder.addStatement(NAME_OF_MAP_FIELD + " = new java.util.HashMap<Class, Binder>()");
         List<Map.Entry<TypeElement, StateBindingRenderer>> list = new ArrayList<>(setToGenerateMap);
-        for(int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             StateBindingRenderer item = list.get(i).getValue();
-            builder.addStatement(NAME_OF_MAP_FIELD + ".put("+item.targetClassName+".class, new "+ item.generetedClassName+"())");
+            builder.addStatement(NAME_OF_MAP_FIELD + ".put(" + item.targetClassName + ".class, new " + item.generetedClassName + "())");
         }
-        builder.addStatement("}");
+        builder.endControlFlow();
 
         return builder.build();
     }
@@ -104,9 +100,10 @@ public class BinderRenderer {
         result.beginControlFlow(" if( data != null )");
         result.addStatement("init();");
         ClassName binderClassName = ClassName.bestGuess("com.tommannson.viewstate.Binder");
-        result.addStatement(binderClassName + " binder = mapOfBinders.get(target.getClass())" );
+        result.addStatement(binderClassName + " binder = mapOfBinders.get(target.getClass())");
+        result.beginControlFlow("if(binder != null)");
         result.addStatement("binder.restore(target, data)");
-
+        result.endControlFlow();
         result.endControlFlow();
         return result.build();
     }
@@ -121,8 +118,14 @@ public class BinderRenderer {
 
         result.addStatement("init();");
         ClassName binderClassName = ClassName.bestGuess("com.tommannson.viewstate.Binder");
-        result.addStatement(binderClassName + " binder = mapOfBinders.get(target.getClass())" );
+        result.addStatement(binderClassName + " binder = mapOfBinders.get(target.getClass())");
+        result.beginControlFlow("if(binder != null)");
         result.addStatement("return binder.persist(target)");
+        result.endControlFlow();
+        result.beginControlFlow("else");
+        result.addStatement("return null");
+        result.endControlFlow();
+
 
         return result.build();
     }
