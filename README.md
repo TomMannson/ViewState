@@ -12,12 +12,6 @@ Libray to generate Helpers Class with Annotation processing
 Annotation Processing is used to Generate `MainActivityBinder` class which save and restore data which should survive Configuration change
 
 ```java
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-
-import com.tommannson.viewstate.ActivityPersistLoader;
-import com.tommannson.viewstate.Persistable;
-
 public class MainActivity extends AppCompatActivity  implements Persistable {
 
     @ViewData
@@ -56,15 +50,6 @@ public class MainActivity extends AppCompatActivity  implements Persistable {
 In version 0.5 we can integrate librare with less effort.. In annotation processor ViewBinder is also generated simplify whole process
 
 ```java
-package com.example.tomaszkrol.viewstate.base;
-
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-
-import com.tommannson.viewstate.ActivityPersistLoader;
-import com.tommannson.viewstate.Persistable;
-import com.tommannson.viewstate.ViewBinder;
-
 public abstract class BaseActivity extends AppCompatActivity implements Persistable {
 
     @Override
@@ -93,12 +78,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Persista
 On another step you should only  extents  BaseActivity instad of AppCompatActivity
 
 ```java
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-
-import com.tommannson.viewstate.ActivityPersistLoader;
-import com.tommannson.viewstate.Persistable;
-
 public class MainActivity extends BaseActivity {
 
     @ViewData
@@ -121,12 +100,6 @@ public class MainActivity extends BaseActivity {
 Library works as well for fragments we should declarate Base class for Fragment to reduct code duplication
 
 ```java
-
-import android.support.v4.app.Fragment;
-
-import com.tommannson.viewstate.Persistable;
-import com.tommannson.viewstate.ViewBinder;
-
 public abstract class BaseFragment extends Fragment implements Persistable {
 
     @Override
@@ -144,14 +117,6 @@ public abstract class BaseFragment extends Fragment implements Persistable {
 In another step you should only  extents  from you BaseFragment class
 
 ```java
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.example.tomaszkrol.viewstate.base.BaseFragment;
-import com.tommannson.viewstate.annotations.ViewData;
 
 public class MainFragment extends BaseFragment {
 
