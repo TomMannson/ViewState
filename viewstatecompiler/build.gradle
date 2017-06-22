@@ -20,7 +20,7 @@ ext {
     siteUrl = 'https://github.com/TomMannson/ViewState'
     gitUrl = 'https://github.com/TomMannson/ViewState.git'
 
-    libraryVersion = '0.5.1'
+    libraryVersion = '0.5.2'
 
     developerId = 'tommannson'
     developerName = 'Tomas Król'
@@ -40,47 +40,6 @@ dependencies {
     compile 'com.squareup:javapoet:1.6.0'
     compile project(':viewstateannotations')
 }
-
-//uploadArchives {
-//    repositories.mavenDeployer {
-//        repository(url: "file:///E:/Tomasz_Krol/Repo/private/maven-repository")
-//    }
-//}
-
-//publishing {
-//    repositories {
-//        maven {
-//            url "https://mymavenrepo.com/repo/3PvTM3M1k48JTgJ7tzAj/"
-//        }
-//    }
-//
-//    publications {
-//        mavenJava(MavenPublication) {
-//            groupId 'com.tommannson.viewstate'
-//            artifactId 'viewstatecompiler'
-//            version '0.1-SNAPSHOT'
-//
-//            from components.java
-//        }
-//    }
-//}
-
-//version = '0.1'
-//
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: "https://dl.bintray.com/tommannson/ViewState"){
-//                authentication(userName: "tommannson", password: "Supernowa1")
-//                pom {
-//                    groupId = "com.tommannson.viewstate"
-//                    artifactId = "viewstatecompiler"
-//                    version = project.version
-//                }
-//            }
-//        }
-//    }
-//}
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
