@@ -23,9 +23,12 @@ allprojects {
 In another  step you should add all dependencyies of librare
 
 ```grove
-apt 'com.tommannson.viewstate:viewstatecompiler:0.5.2'
-compile 'com.tommannson.viewstate:viewstateannotations:0.5.2'
-compile 'com.tommannson.viewstate:viewstatecore:0.5.2'
+dependencies {
+
+  compile  'com.tommannson.viewstate:viewstateannotations:0.5.2'
+  compile  'com.tommannson.viewstate:viewstatecore:0.5.2'
+  annotationProcessor 'com.tommannson.viewstate:viewstatecompiler:0.5.2'
+}
 ```
 
 ### Example for ViewData
