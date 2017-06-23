@@ -2,11 +2,11 @@
 Android "Annotation Processing" library for persist and restore data after Configuration change
 
 
-Libray to generate Helpers Class with Annotation processing
+Library which help creating and persist state of acrivityies and fragments in applicatin.  it generate Helpers Class with Annotation processing 
 
 ### Installation
 
-To install you should add repository to build.gradle of project
+To install library we should add repository to build.gradle of project
 
 ```grove
 allprojects {
@@ -24,7 +24,8 @@ In another  step you should add all dependencyies of librare
 
 ```grove
 dependencies {
-
+  /*other dependencies*/
+  
   compile  'com.tommannson.viewstate:viewstateannotations:0.5.2'
   compile  'com.tommannson.viewstate:viewstatecore:0.5.2'
   annotationProcessor 'com.tommannson.viewstate:viewstatecompiler:0.5.2'
