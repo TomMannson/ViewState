@@ -22,6 +22,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        /*other repositories*/
         maven {
             url 'https://dl.bintray.com/tommannson/maven/'
         }
