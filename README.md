@@ -4,6 +4,30 @@ Android "Annotation Processing" library for persist and restore data after Confi
 
 Libray to generate Helpers Class with Annotation processing
 
+### Installation
+
+To install you should add repository to build.gradle of project
+
+```grove
+allprojects {
+    repositories {
+        jcenter()
+        /*other repositories*/
+        maven {
+            url 'https://dl.bintray.com/tommannson/maven/'
+        }
+    }
+    
+}
+```
+
+In another  step you should add all dependencyies of librare
+
+```grove
+apt 'com.tommannson.viewstate:viewstatecompiler:0.5.2'
+compile 'com.tommannson.viewstate:viewstateannotations:0.5.2'
+compile 'com.tommannson.viewstate:viewstatecore:0.5.2'
+```
 
 ### Example for ViewData
 
