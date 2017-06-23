@@ -17,7 +17,6 @@ allprojects {
             url 'https://dl.bintray.com/tommannson/maven/'
         }
     }
-    
 }
 ```
 
@@ -141,7 +140,6 @@ public abstract class BaseFragment extends Fragment implements Persistable {
 In another step you should only  extents  from you BaseFragment class
 
 ```java
-
 public class MainFragment extends BaseFragment {
 
     @ViewData
